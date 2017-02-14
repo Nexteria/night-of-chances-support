@@ -12,9 +12,6 @@
  - value
 - roles (Candidate, Buddy, Partner)
 
-### Person attribute
-- name
-
 ### Event
 - name
 - start_time
@@ -27,29 +24,72 @@
 - partner **(?)**
 - budy **(?)**
 
-### Event attribute
-- name
-
 ### Event requirement
 - event **REL**
 - person_attribute_name
 - person_attribute_value
+- value
 
 ## Values
 
+### Person attribute
+- name
+
 ## Use cases
 
-### Partners
+### Import registracii z Eventbrite-u
 
-#### Add partner
+### Import priradeni z JotForm-u
 
-#### Remove partner
+### Administracia partnerov
+- Pridavanie
+- Odstranenie
+- Editacia
+- Priradenie udalosti
 
-#### Edit partner
+### Administracia udalosti
+- Pridanie
+- Odstranenie
+- Editacia
 
-#### Events under partner
+### Balik pre partnerov
+- zoznam udalosti
+- miestnosti
+- mena buddy
+- priradeni studenti
+ - meno
+ - priezvisko
+ - email
+ - je potvrdeny
 
-#### Presentation for partner
+### Balik pre buddikov
+- zoznam udalosti
+- miestnosti
+- mena firiem
+- priradeni studenti
+ - meno
+ - priezvisko
+ - email
+ - je potvrdeny
+- mtz a kriteria pre udalosti
 
-### Persons
-- 
+### Balik pre registracnu aplikaciu
+- v podstate export co siel na Dusanovu apku
+
+### Presentation for partner
+
+### Email list of registered candidates for Exponea
+csv containing email of each students and a list of workshops
+- ti co sa dostali
+- ti co sa nedostali
+- ti co sa nikam nehlasili
+
+### Pairing matrix
+student vs registerable events (workshop, speed dates)
+- is student interested
+- is firm interested
+- match rating (score)
+- recomendation (auto)
+- selection ()
+- is confirmed ()
+- attended
