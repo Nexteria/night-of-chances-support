@@ -1,0 +1,19 @@
+{
+  "name": "night-of-chances-support",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Player1os/night-of-chances-support.git"
+  },
+  "author": "Player1os",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Player1os/night-of-chances-support/issues"
+  },
+  "homepage": "https://github.com/Player1os/night-of-chances-support#readme"
+}
