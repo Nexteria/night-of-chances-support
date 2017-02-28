@@ -12,13 +12,14 @@
     "url": "git+https://github.com/Player1os/night-of-chances-support.git"
   },
   "author": "Player1os",
-  "license": "ISC",
+  "license": "UNLICENSED",
   "bugs": {
     "url": "https://github.com/Player1os/night-of-chances-support/issues"
   },
   "homepage": "https://github.com/Player1os/night-of-chances-support#readme",
   "dependencies": {
     "dotenv": "^4.0.0",
+    "google-auth-library": "^0.10.0",
     "googleapis": "^16.1.0"
   }
 }
