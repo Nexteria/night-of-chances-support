@@ -11,7 +11,7 @@ import fse from 'fs-extra';
 import path from 'path';
 
 // Promisify libraries.
-Promise.promisifyAll(fs);
+Promise.promisifyAll(fse);
 
 // Creates OAuth2 client based on config.
 const createOAuth2Client = () => {
