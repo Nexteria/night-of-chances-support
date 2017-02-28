@@ -18,7 +18,7 @@ const createOAuth2Client = () => {
 	return new google.auth.OAuth2(
 		config.GOOGLE_API_CLIENT_ID,
 		config.GOOGLE_API_CLIENT_SECRET,
-		config.GOOGLE_API_REDIRECT_URL,
+		config.GOOGLE_API_REDIRECT_URI,
 	);
 };
 
