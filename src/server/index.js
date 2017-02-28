@@ -1,41 +1,23 @@
 /* eslint-disable no-console */
 
 // Load app modules.
-import * as googleAuth from '@/src/server/google/auth';
-import * as googleSheet from '@/src/server/google/sheet';
+import app from '@/src/server/app';
 import config from '@/src/server/lib/config';
 
-// Initialize google auth client.
-googleAuth.createClient()
-	.then((googleAuthClient) => {
-		// Set authentication client for the google sheet module.
-		googleSheet.setAuth(googleAuthClient);
+// Load npm modules.
+import Promise from 'bluebird';
 
-		// Load data from the registrations sheet.
-		return googleSheet.getValues(
-			config.GOOGLE_SHEET_REGISTRATIONS_SPREADSHEET_ID,
-			config.GOOGLE_SHEET_REGISTRATIONS_RANGE,
-		);
-	})
-	.then((registrationValues) => {
-		// Store the retrieved registration values.
-		// TODO: Implement.
-		console.log(registrationValues[0]);
-		console.log(registrationValues.length);
+// Load node modules.
+import http from 'http';
 
-		// Load data from the preferences sheet.
-		return googleSheet.getValues(
-			config.GOOGLE_SHEET_PREFERENCES_SPREADSHEET_ID,
-			config.GOOGLE_SHEET_PREFERENCES_RANGE,
-		);
-	})
-	.then((preferenceValues) => {
-		// Store the retrieved registration values.
-		// TODO: Implement.
-		console.log(preferenceValues[0]);
-		console.log(preferenceValues.length);
+// Promisify libraries.
+Promise.promisifyAll(http);
+
+// Initialize server.
+http.createServer(app).listenAsync(config.APP_HTTP_PORT)
+	.then(() => {
+		console.log(`Http server listening on port ${config.APP_HTTP_PORT.toString()}`);
 	})
 	.catch((err) => {
-		// Crash and report error on failure.
 		throw err;
 	});
