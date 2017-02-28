@@ -1,3 +1,41 @@
 /* eslint-disable no-console */
 
-console.log('Hello World');
+// Load app modules.
+import * as googleAuth from '@/src/server/google/auth';
+import * as googleSheet from '@/src/server/google/sheet';
+import config from '@/src/server/lib/config';
+
+// Initialize google auth client.
+googleAuth.createClient()
+	.then((googleAuthClient) => {
+		// Set authentication client for the google sheet module.
+		googleSheet.setAuth(googleAuthClient);
+
+		// Load data from the registrations sheet.
+		return googleSheet.getValues(
+			config.GOOGLE_SHEET_REGISTRATIONS_SPREADSHEET_ID,
+			config.GOOGLE_SHEET_REGISTRATIONS_RANGE,
+		);
+	})
+	.then((registrationValues) => {
+		// Store the retrieved registration values.
+		// TODO: Implement.
+		console.log(registrationValues[0]);
+		console.log(registrationValues.length);
+
+		// Load data from the preferences sheet.
+		return googleSheet.getValues(
+			config.GOOGLE_SHEET_PREFERENCES_SPREADSHEET_ID,
+			config.GOOGLE_SHEET_PREFERENCES_RANGE,
+		);
+	})
+	.then((preferenceValues) => {
+		// Store the retrieved registration values.
+		// TODO: Implement.
+		console.log(preferenceValues[0]);
+		console.log(preferenceValues.length);
+	})
+	.catch((err) => {
+		// Crash and report error on failure.
+		throw err;
+	});
