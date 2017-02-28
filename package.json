@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "googleapis:token": "babel-node src/server/google_token",
     "webpack:server": "webpack --config webpack/server.babel.js",
     "webpack:server:watch": "npm run webpack:server -- --watch"
   },
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/Player1os/night-of-chances-support#readme",
   "dependencies": {
+    "babel-cli": "^6.23.0",
     "babel-core": "^6.23.1",
     "babel-loader": "^6.3.2",
     "babel-polyfill": "^6.23.0",
