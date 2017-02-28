@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 // Load app modules.
 import * as googleAuth from '@/src/server/google/auth';
 import config from '@/src/server/lib/config';
@@ -9,8 +11,9 @@ import Promise from 'bluebird';
 import readline from 'readline';
 
 // Generate and output the auth url for the specified scopes.
-console.log('Authorize this app by visiting this url:\n'
-	+ googleAuth.generateAuthUrl(config.GOOGLE_API_REDIRECT_SCOPES));
+console.log(
+	`Authorize this app by visiting this url:\n${googleAuth.generateAuthUrl(config.GOOGLE_API_REDIRECT_SCOPES)}`,
+);
 
 // Prompt user to enter the authorization code.
 const readlineInterface = readline.createInterface({

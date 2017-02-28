@@ -46,7 +46,7 @@ export const retrieveToken = (code) => {
 	}))
 		.then((token) => {
 			return fse.writeJsonAsync(tokenStorageFilePath, token, 'utf-8');
-		})
+		});
 };
 
 // Create a client that uses a stored google api token.
@@ -56,5 +56,5 @@ export const createClient = () => {
 			return Object.assign(createOAuth2Client(), {
 				credentials: token,
 			});
-		})
+		});
 };
