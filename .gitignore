@@ -7,7 +7,6 @@ Thumbs.db
 
 # Config files file.
 .env
-client_secret.json
 
 # NPM generated files.
 node_modules/*
