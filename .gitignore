@@ -1,12 +1,18 @@
-# IDEs configuration.
+# OS specific files.
+.DS_Store
+Thumbs.db
+
+# IDEs configuration files.
 .vscode/*
 
-# Logs
-npm-debug.log*
-
-# Dependency directories
-node_modules
-
-
+# Config files file.
 .env
 client_secret.json
+
+# NPM generated files.
+node_modules/*
+npm-debug.log*
+
+# Build generated files.
+build/*
+output/*

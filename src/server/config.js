@@ -4,9 +4,9 @@ import npmPackage from '@/package.json';
 
 // Load npm modules.
 import dotenv from 'dotenv';
-import fse from 'fs-extra';
 
 // Load node modules.
+import fs from 'fs';
 import path from 'path';
 
 // Populate unassigned process env keys with values defined in the .env file.
@@ -16,7 +16,7 @@ dotenv.config();
 const config = Object.assign({}, process.env);
 
 // Load required config parameters from default env file.
-fse.readFileSync(path.join(paths.root, '.env.default'), 'utf-8')
+fs.readFileSync(path.join(paths.root, '.env.default'), 'utf-8')
 	// Parse keys from file.
 	.split('\n').map((line) => {
 		return line.split('=')[0];
