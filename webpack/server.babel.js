@@ -1,5 +1,5 @@
 // Load app modules.
-import * as paths from '@/src/server/paths';
+import * as paths from '@/src/server/lib/paths';
 
 // Load npm modules.
 import webpack from 'webpack';
