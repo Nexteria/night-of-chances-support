@@ -16,3 +16,6 @@ npm-debug.log*
 # Build generated files.
 build/*
 output/*
+
+# Stored cache files.
+.google_api_token
