@@ -11,7 +11,6 @@ export const buildServer = path.join(build, 'server');
 
 // Define 'src' paths.
 export const src = path.join(root, 'src');
-export const srcCommon = path.join(src, 'common');
 export const srcServer = path.join(src, 'server');
 
 // Define 'test' path.

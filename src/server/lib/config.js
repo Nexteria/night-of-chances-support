@@ -32,25 +32,16 @@ fs.readFileSync(path.join(paths.root, '.env.default'), 'utf-8')
 config.APP_VERSION = npmPackage.version;
 config.APP_IS_PRODUCTION = config.NODE_ENV === 'production';
 
-config.APP_TEST_TIMEOUT = parseInt(config.APP_TEST_TIMEOUT, 10);
-config.APP_TEST_PING_SERVER_DELAY = parseInt(config.APP_TEST_PING_SERVER_DELAY, 10);
-config.APP_TEST_EVENT_PROCESSING_DELAY = parseInt(config.APP_TEST_EVENT_PROCESSING_DELAY, 10);
-config.APP_TEST_SERVER_PORT = parseInt(config.APP_TEST_SERVER_PORT, 10);
-
+// TODO: Add.
+/*
 config.APP_HTTP_PORT = parseInt(config.APP_HTTP_PORT, 10);
 config.APP_DATABASE_PORT = parseInt(config.APP_DATABASE_PORT, 10);
-config.APP_LEGACY_DATABASE_PORT = parseInt(config.APP_LEGACY_DATABASE_PORT, 10);
+*/
 
+// TODO: Add.
+/*
 config.APP_API_HOSTNAME = `api.${config.APP_HOSTNAME}`;
-config.APP_GUI_HOSTNAME = `app.${config.APP_HOSTNAME}`;
-
-config.APP_MAIL_REDIRECT_TO_CONSOLE = config.APP_MAIL_REDIRECT_TO_CONSOLE === 'TRUE';
-config.APP_MAIL_CONTACTS_APPLICATION = JSON.parse(config.APP_MAIL_CONTACTS_APPLICATION);
-config.APP_MAIL_CONTACTS_ADMINISTRATORS = JSON.parse(config.APP_MAIL_CONTACTS_ADMINISTRATORS);
-config.APP_MAIL_CONTACTS_STAKEHOLDERS = JSON.parse(config.APP_MAIL_CONTACTS_STAKEHOLDERS);
-
-config.APP_REQUEST_INITIAL_RETRY_OFFSET = parseInt(config.APP_REQUEST_INITIAL_RETRY_OFFSET, 10);
-config.APP_REQUEST_MAX_RETRY_COUNT = parseInt(config.APP_REQUEST_MAX_RETRY_COUNT, 10);
+*/
 
 // Export as module output.
 export default config;
