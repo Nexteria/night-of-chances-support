@@ -26,6 +26,7 @@
     "babel-loader": "^6.3.2",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.1.10",
+    "babel-root-import": "^4.1.8",
     "bluebird": "^3.4.7",
     "dotenv": "^4.0.0",
     "fs-extra": "^2.0.0",
