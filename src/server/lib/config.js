@@ -16,11 +16,7 @@ dotenv.config();
 const config = Object.assign({}, process.env);
 
 // Load required config parameters from default env file.
-fs.readFileSync(path.join(paths.root, '.env.default'), 'utf-8')
-	// Parse keys from file.
-	.split('\n').map((line) => {
-		return line.split('=')[0];
-	})
+Object.keys(dotenv.parse(fs.readFileSync(path.join(paths.root, '.env.default'), 'utf-8')))
 	// Check if all keys are part of the config.
 	.forEach((key) => {
 		if (!(key in config)) {
@@ -31,6 +27,8 @@ fs.readFileSync(path.join(paths.root, '.env.default'), 'utf-8')
 // Apply modifications to config.
 config.APP_VERSION = npmPackage.version;
 config.APP_IS_PRODUCTION = config.NODE_ENV === 'production';
+
+config.GOOGLE_API_REDIRECT_SCOPES = JSON.parse(config.GOOGLE_API_REDIRECT_SCOPES);
 
 // TODO: Add.
 /*

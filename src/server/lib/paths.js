@@ -2,7 +2,7 @@
 import path from 'path';
 
 // Define 'root' path.
-export const root = path.resolve(path.join(__dirname, '..', '..'));
+export const root = path.resolve(path.join(__dirname, '..', '..', '..'));
 
 // Define 'build' paths.
 export const build = path.join(root, 'build');
