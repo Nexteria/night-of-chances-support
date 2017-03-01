@@ -2,6 +2,7 @@
 
 // Load app modules.
 import app from '@/src/server/app';
+import knex from '@/src/server/knex';
 import config from '@/src/server/lib/config';
 
 // Load npm modules.
@@ -13,11 +14,20 @@ import http from 'http';
 // Promisify libraries.
 Promise.promisifyAll(http);
 
-// Initialize server.
-http.createServer(app).listenAsync(config.APP_HTTP_PORT)
+// Initialize database.
+knex.connect()
+	.then((result) => {
+		// Output success message.
+		console.log(`Connected to database (${result.host} | ${result.port} | ${result.name})`);
+
+		// Initialize http server.
+		return http.createServer(app).listenAsync(config.APP_HTTP_PORT);
+	})
 	.then(() => {
+		// Output success message.
 		console.log(`Http server listening on port ${config.APP_HTTP_PORT.toString()}`);
 	})
 	.catch((err) => {
+		// Crash and report error on failure.
 		throw err;
 	});

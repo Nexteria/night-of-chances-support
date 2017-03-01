@@ -12,6 +12,9 @@ export const buildServer = path.join(build, 'server');
 // Define 'src' paths.
 export const src = path.join(root, 'src');
 export const srcServer = path.join(src, 'server');
+export const srcServerKnex = path.join(srcServer, 'knex');
+export const srcServerKnexMigrations = path.join(srcServerKnex, 'migrations');
+export const srcServerKnexSeeds = path.join(srcServerKnex, 'seeds');
 
 // Define 'test' path.
 export const test = path.join(root, 'test');
