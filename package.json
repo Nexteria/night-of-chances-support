@@ -64,6 +64,8 @@
     "knex": "^0.12.7",
     "nodemon": "^1.11.0",
     "pg": "^6.1.2",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1",
     "source-map-support": "^0.4.11",
     "webpack": "^2.2.1"
   }
