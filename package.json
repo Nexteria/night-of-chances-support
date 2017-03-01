@@ -9,6 +9,10 @@
     "eslint": "esw . --ext .js --format simple --color --cache",
     "eslint:watch": "npm run eslint -- --watch",
     "googleapis:token": "babel-node src/server/google_token",
+    "pm2:start": "pm2 start pm2.json",
+    "pm2:restart": "pm2 restart pm2.json",
+    "pm2:stop": "pm2 stop pm2.json",
+    "pm2:delete": "pm2 delete pm2.json",
     "webpack:server": "webpack --config webpack/server.babel.js",
     "webpack:server:watch": "npm run webpack:server -- --watch"
   },

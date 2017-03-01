@@ -1,0 +1,14 @@
+{
+  "apps": [
+    {
+      "name": "app_server_development",
+      "script": "build/server",
+      "cwd": ".",
+      "log_date_format": "YYYY-MM-DD HH:mm:ss",
+      "exec_mode": "fork_mode",
+      "error_file": "output/app_server_development.err.log",
+      "out_file": "output/app_server_development.out.log",
+      "combine_logs": true
+    }
+  ]
+}
