@@ -1,4 +1,4 @@
-import StringDataType from '@/src/common/data_types/string';
+import StringDataType from '@/src/common/data_type/string';
 
 export default class NumberDataType {
 	static validate(value) {

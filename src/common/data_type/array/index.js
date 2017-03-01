@@ -1,4 +1,4 @@
-import ObjectDataType from '@/src/common/data_types/object';
+import ObjectDataType from '@/src/common/data_type/object';
 
 export default class ArrayDataType {
 	static last(value) {

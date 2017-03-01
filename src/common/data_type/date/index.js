@@ -1,4 +1,4 @@
-import NumberDataType from '@/src/common/data_types/number';
+import NumberDataType from '@/src/common/data_type/number';
 
 export default class DateDataType {
 	static timestamp(value) {

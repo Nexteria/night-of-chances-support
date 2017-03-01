@@ -1,6 +1,6 @@
-import StringDataType from '@/src/common/data_types/string';
+import StringDataType from '@/src/common/data_type/string';
 
-export default class JsonStringDataTypes extends StringDataType {
+export default class JsonStringDataType extends StringDataType {
 	static validate(value) {
 		try {
 			return super.validate(value)

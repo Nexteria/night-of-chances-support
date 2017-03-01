@@ -1,4 +1,4 @@
-import StringDataType from '@/src/common/data_types/string';
+import StringDataType from '@/src/common/data_type/string';
 
 const invalidCharacterRegExp = /[^a-z0-9_-]/;
 const invalidCharactersRegExp = /[^a-z0-9_-]/g;

@@ -1,4 +1,4 @@
-import RegExpStringDataTypeTemplate from '@/src/common/data_types/template/reg_exp';
+import RegExpStringDataTypeTemplate from '@/src/common/data_type/template/reg_exp';
 
 const regExp = new RegExp(
 	// @Reference: Taken from regex-weburl.js.
