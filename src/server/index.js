@@ -18,7 +18,7 @@ Promise.promisifyAll(http);
 knex.connect()
 	.then((result) => {
 		// Output success message.
-		console.log(`Connected to database (${result.host} | ${result.port} | ${result.name})`);
+		console.log(`Connected to database (Host: ${result.host} | Port: ${result.port} | Database: ${result.name})`);
 
 		// Initialize http server.
 		return http.createServer(app).listenAsync(config.APP_HTTP_PORT);
