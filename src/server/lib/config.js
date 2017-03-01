@@ -29,11 +29,7 @@ config.APP_VERSION = npmPackage.version;
 config.APP_IS_PRODUCTION = config.NODE_ENV === 'production';
 
 config.APP_HTTP_PORT = parseInt(config.APP_HTTP_PORT, 10);
-
-// TODO: Add.
-/*
 config.APP_DATABASE_PORT = parseInt(config.APP_DATABASE_PORT, 10);
-*/
 
 // TODO: Add.
 /*
