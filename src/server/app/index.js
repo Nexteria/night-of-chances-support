@@ -1,5 +1,5 @@
 // Load app modules.
-import * as requestLib from '@/src/server/lib/request';
+import * as expressRequest from '@/src/server/lib/express_request';
 
 // Load npm modules.
 import bodyParser from 'body-parser';
@@ -24,10 +24,10 @@ app.use(bodyParser.json({
 
 // Define basic behaviour.
 app.use((req, res) => {
-	console.log(requestLib.getIpAddress(req));
+	console.log(expressRequest.getIpAddress(req));
 	console.log(req.httpVersion);
 	console.log(req.method);
-	console.log(requestLib.getFullUrl(req));
+	console.log(expressRequest.getFullUrl(req));
 	console.log(req.headers);
 	console.log(req.rawBody);
 
