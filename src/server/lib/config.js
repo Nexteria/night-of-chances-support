@@ -31,12 +31,7 @@ config.APP_IS_PRODUCTION = config.NODE_ENV === 'production';
 config.APP_HTTP_PORT = parseInt(config.APP_HTTP_PORT, 10);
 config.APP_DATABASE_PORT = parseInt(config.APP_DATABASE_PORT, 10);
 
-// TODO: Add.
-/*
-config.APP_API_HOSTNAME = `api.${config.APP_HOSTNAME}`;
-*/
-
-config.GOOGLE_API_REDIRECT_SCOPES = JSON.parse(config.GOOGLE_API_REDIRECT_SCOPES);
+config.APP_GOOGLE_API_REDIRECT_SCOPES = JSON.parse(config.APP_GOOGLE_API_REDIRECT_SCOPES);
 
 // Export as module output.
 export default config;

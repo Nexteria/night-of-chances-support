@@ -12,7 +12,7 @@ import readline from 'readline';
 
 // Generate and output the auth url for the specified scopes.
 console.log(
-	`Authorize this app by visiting this url:\n${googleAuth.generateAuthUrl(config.GOOGLE_API_REDIRECT_SCOPES)}`,
+	`Authorize this app by visiting this url:\n${googleAuth.generateAuthUrl(config.APP_GOOGLE_API_REDIRECT_SCOPES)}`,
 );
 
 // Prompt user to enter the authorization code.

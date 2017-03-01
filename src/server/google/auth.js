@@ -16,9 +16,9 @@ Promise.promisifyAll(fse);
 // Creates OAuth2 client based on config.
 const createOAuth2Client = () => {
 	return new google.auth.OAuth2(
-		config.GOOGLE_API_CLIENT_ID,
-		config.GOOGLE_API_CLIENT_SECRET,
-		config.GOOGLE_API_REDIRECT_URI,
+		config.APP_GOOGLE_API_CLIENT_ID,
+		config.APP_GOOGLE_API_CLIENT_SECRET,
+		config.APP_GOOGLE_API_REDIRECT_URI,
 	);
 };
 
