@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 // Load app modules.
-import * as dataTypes from '@/src/common/data_types';
+import * as dataType from '@/src/common/data_type';
 import knex from '@/src/server/knex';
 import * as testCases from '@/src/server/knex/test/cases';
 
@@ -39,7 +39,7 @@ knex.connect()
 		return Promise.all(executeCases);
 	})
 	.then((results) => {
-		dataTypes.array.shallowLeftMerge(executeCasesToString, results.map((result) => {
+		dataType.array.shallowLeftMerge(executeCasesToString, results.map((result) => {
 			return {
 				result,
 			};
