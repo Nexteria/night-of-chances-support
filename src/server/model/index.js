@@ -8,6 +8,7 @@ import knex from '@/src/server/knex';
 // Load npm modules.
 import Promise from 'bluebird';
 
+// Expose base model.
 export default {
 	// Create new models by extend the current one.
 	extend(model) {
