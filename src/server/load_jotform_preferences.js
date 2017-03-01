@@ -11,22 +11,10 @@ googleAuth.createClient()
 		// Set authentication client for the google sheet module.
 		googleSheet.setAuth(googleAuthClient);
 
-		// Load data from the registrations sheet.
-		return googleSheet.getValues(
-			config.GOOGLE_SHEET_REGISTRATIONS_SPREADSHEET_ID,
-			config.GOOGLE_SHEET_REGISTRATIONS_RANGE,
-		);
-	})
-	.then((registrationValues) => {
-		// Store the retrieved registration values.
-		// TODO: Implement.
-		console.log(registrationValues[0]);
-		console.log(registrationValues.length);
-
 		// Load data from the preferences sheet.
 		return googleSheet.getValues(
 			config.GOOGLE_SHEET_PREFERENCES_SPREADSHEET_ID,
-			config.GOOGLE_SHEET_PREFERENCES_RANGE,
+			'A:N',
 		);
 	})
 	.then((preferenceValues) => {
