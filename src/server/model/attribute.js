@@ -17,24 +17,49 @@ export default {
 				color: String,
 			},
 		});
-		model.attributeValueTable = Model.extend({
-			table: `${model.table}_attribute_value`,
-
-		});
+		model.attributeValueTable = `${model.table}_attribute_value`;
 
 		// Pass on model to caller.
 		return model;
 	},
 	// Create a single entity of the model.
 	create(values) {
-		// Isolate attributes.
+		// Validate attributes.
+		// TODO: check if its an object containing string values.
 
 		// Find existing attributes.
+		this.attributeModel.find
 
 		// Delete old attribute values.
 
 		// Add attribute values.
 	},
+	// Find all entities of the model matching the query.
+	find(query) {
+		// TODO: Search using attributes in query.
+		// TODO: Add attributes to result.
+	},
+	// Find all entities of the model matching the query.
+	findOne(query) {
+		// TODO: Search using attributes in query.
+		// TODO: Add attributes to result.
+	},
+	// Update all entities of the model matching the query with the supplied values.
+	update(query, values) {
+		// TODO: Search using attributes in query.
+		// TODO: Consider attributes in values.
+		// TODO: Add attributes to result.
+	},
+	// Create a single attribute of the model.
+	createAttribute(values) {
 
+	},
+	// Retrieve all attributes of the model.
+	findAllAttributes() {
 
+	},
+	// Update
+	// Delete all attributes of the model matching the query.
+	destroyAttributes(query) {
+	},
 };

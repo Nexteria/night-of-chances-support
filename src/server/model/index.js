@@ -20,7 +20,7 @@ export default {
 	},
 	// All fields present in the underlying data object, a parameter specifies whether this includes the primary key.
 	fieldNames(isKeyIncluded) {
-		const baseFieldNames = [...Object.keys(this.fields), '_id'];
+		const baseFieldNames = Object.keys(this.fields);
 
 		if (isKeyIncluded) {
 			return [...baseFieldNames, 'key'];
