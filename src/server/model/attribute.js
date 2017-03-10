@@ -1,6 +1,10 @@
 // Load app modules.
+import * as dataType from '@/src/common/data_type';
 import knex from '@/src/server/knex';
 import Model from '@/src/server/model';
+
+// Load npm modules.
+import Promise from 'bluebird';
 
 // Expose attribute base model.
 export default {
@@ -24,15 +28,55 @@ export default {
 	},
 	// Create a single entity of the model.
 	create(values) {
-		// Validate attributes.
-		// TODO: check if its an object containing string values.
+		let attributes = [];
 
-		// Find existing attributes.
-		this.attributeModel.find
+		return Promise.resolve()
+			.then(() => {
+				// Validate attributes.
+				// TODO: check if its an object containing string values.
 
-		// Delete old attribute values.
+				attributes = Object.keys(values.attributes).map((attribute) => {
+					return {
+						name: attribute,
+					};
+				});
 
-		// Add attribute values.
+				// Find existing attributes.
+				return Promise.all(attributes.map((attribute) => {
+					return this.attributeModel.count({
+						name: attribute.name,
+					});
+				}));
+			})
+			.then((attributeCounts) => {
+				// Merge result into attributes.
+				attributes = dataType.array.shallowLeftMerge(attributes, attributeCounts.map((attributeCount) => {
+					return {
+						isCreated: attributeCount > 0,
+					};
+				}));
+
+				// Create attributes that were not found.
+				return Promise.all(attributes.map((attribute) => {
+					return attribute.isCreated
+						? this.attributeModel.findOne({
+							name: attribute.name,
+						})
+						: this.attributeModel.create({
+							name: attribute.name,
+						});
+				}));
+			})
+			.then(() => {
+				// Delete old attribute values.
+				return knex(this.attributeValueTable)
+					.select(this.fieldNames(true))
+					.whereIn('name', )
+
+
+
+				// Add attribute values.
+			});
 	},
 	// Find all entities of the model matching the query.
 	find(query) {
@@ -49,17 +93,5 @@ export default {
 		// TODO: Search using attributes in query.
 		// TODO: Consider attributes in values.
 		// TODO: Add attributes to result.
-	},
-	// Create a single attribute of the model.
-	createAttribute(values) {
-
-	},
-	// Retrieve all attributes of the model.
-	findAllAttributes() {
-
-	},
-	// Update
-	// Delete all attributes of the model matching the query.
-	destroyAttributes(query) {
 	},
 };
