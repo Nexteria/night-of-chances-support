@@ -47,7 +47,8 @@
 		"promise/catch-or-return": ["error"],
 		"promise/no-native": ["error"],
 		"promise/no-nesting": ["warn"],
-		"promise/no-promise-in-callback": ["warn"]
+		"promise/no-promise-in-callback": ["warn"],
+		"react/jsx-indent": ["error", "tab"]
 	},
 	"settings": {
 		"import/resolver": "babel-root-import"

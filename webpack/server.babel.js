@@ -8,13 +8,14 @@ import webpack from 'webpack';
 import fs from 'fs';
 import path from 'path';
 
+// Expose configuration object.
 export default {
 	entry: [
 		'babel-polyfill',
 		path.resolve(paths.srcServer, 'index.js'),
 	],
 	output: {
-		path: path.resolve(paths.buildServer),
+		path: paths.buildServer,
 		filename: 'index.js',
 	},
 	target: 'node',

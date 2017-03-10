@@ -1,10 +1,12 @@
 // Load app modules.
-import * as expressRequest from '@/src/server/lib/express_request';
+import apiMiddleware from '@/src/server/app/middleware/api';
+import errorMiddleware from '@/src/server/app/middleware/error';
+import frontendMiddleware from '@/src/server/app/middleware/frontend';
+import * as paths from '@/src/server/lib/paths';
 
 // Load npm modules.
 import bodyParser from 'body-parser';
 import express from 'express';
-import httpStatus from 'http-status';
 
 // Initialize app.
 const app = express();
@@ -22,17 +24,17 @@ app.use(bodyParser.json({
 	verify: rawBodyCreator,
 }));
 
-// Define basic behaviour.
-app.use((req, res) => {
-	console.log(expressRequest.getIpAddress(req));
-	console.log(req.httpVersion);
-	console.log(req.method);
-	console.log(expressRequest.getFullUrl(req));
-	console.log(req.headers);
-	console.log(req.rawBody);
+// Add serving of static content.
+app.use(express.static(paths.buildBrowser));
 
-	res.status(httpStatus.OK).send();
-});
+// Add api middleware.
+app.use('/api', apiMiddleware);
+
+// Add frontend rendering middleware.
+app.use('*', frontendMiddleware);
+
+// Add error handling middleware.
+app.use(errorMiddleware);
 
 // Expose app.
 export default app;

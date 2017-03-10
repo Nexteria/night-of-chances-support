@@ -21,43 +21,44 @@ export default {
 				color: String,
 			},
 		});
-		model.attributeValueTable = `${model.table}_attribute_value`;
+		model.attributeValuePseudoModel = {
+			table: `${model.table}_attribute_value`,
+			parentKeyfield: `${model.table}_key`,
+			attributeKeyfield: `${model.table}_attribute_key`,
+		};
 
 		// Pass on model to caller.
 		return model;
 	},
-	// Create a single entity of the model.
-	create(values) {
-		let attributes = [];
+	validateAttributes(attributes) {
+		// TODO: check if its an object containing string values.
+	},
+	retrieveAttributes(attributes) {
+		// Objectify attribute names.
+		let objectifiedAttributes = Object.keys(attributes).map((attribute) => {
+			return {
+				name: attribute,
+			};
+		});
 
-		return Promise.resolve()
-			.then(() => {
-				// Validate attributes.
-				// TODO: check if its an object containing string values.
-
-				attributes = Object.keys(values.attributes).map((attribute) => {
-					return {
-						name: attribute,
-					};
-				});
-
-				// Find existing attributes.
-				return Promise.all(attributes.map((attribute) => {
-					return this.attributeModel.count({
-						name: attribute.name,
-					});
-				}));
-			})
+		// Find existing attributes.
+		return Promise.all(attributes.map((attribute) => {
+			return this.attributeModel.count({
+				name: attribute.name,
+			});
+		}))
 			.then((attributeCounts) => {
-				// Merge result into attributes.
-				attributes = dataType.array.shallowLeftMerge(attributes, attributeCounts.map((attributeCount) => {
-					return {
-						isCreated: attributeCount > 0,
-					};
-				}));
+				// Merge counts into objectified attributes.
+				objectifiedAttributes = dataType.array.shallowLeftMerge(
+					attributes,
+					attributeCounts.map((attributeCount) => {
+						return {
+							isCreated: attributeCount > 0,
+						};
+					}));
 
 				// Create attributes that were not found.
-				return Promise.all(attributes.map((attribute) => {
+				return Promise.all(objectifiedAttributes.map((attribute) => {
 					return attribute.isCreated
 						? this.attributeModel.findOne({
 							name: attribute.name,
@@ -66,12 +67,37 @@ export default {
 							name: attribute.name,
 						});
 				}));
-			})
+			});
+	},
+	createAttributeValues() {
+
+	},
+	destroyAttributeValues({ key }) {
+		return Promise.all(attributeDocuments.map((attributeDocument) => {
+			return knex(this.attributeValuePseudoModel.table)
+				.delete()
+				.where({
+					[this.attributeValuePseudoModel.attributeKeyfield]: attributeDocument.key,
+					[this.attributeValuePseudoModel.attributeKeyfield]: attributeDocument.key,
+				});
+		}));
+	},
+	// Create a single entity of the model.
+	create(values) {
+		return Promise.resolve()
 			.then(() => {
-				// Delete old attribute values.
-				return knex(this.attributeValueTable)
-					.select(this.fieldNames(true))
-					.whereIn('name', )
+				// Validate attributes.
+				this.validateAttributes(values.attributes);
+
+				// Retrieve attribute documents.
+				return this.retrieveAttributes(values.attributes);
+			})
+			.then((attributeDocuments) => {
+				// Insert attribute values.
+
+			})
+
+
 
 
 
@@ -93,5 +119,8 @@ export default {
 		// TODO: Search using attributes in query.
 		// TODO: Consider attributes in values.
 		// TODO: Add attributes to result.
+
+		// Delete old attribute values.
+
 	},
 };

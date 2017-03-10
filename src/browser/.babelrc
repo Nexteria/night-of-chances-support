@@ -1,0 +1,15 @@
+{
+	"presets": [
+		["env"],
+		["react"]
+	],
+	"plugins": [
+		["babel-plugin-transform-builtin-extend", {
+			"globals": ["Error", "Array"]
+		}],
+		["babel-root-import", {
+			"rootPathPrefix": "@"
+		}],
+		["transform-object-rest-spread"]
+	]
+}
