@@ -16,14 +16,10 @@ class ErrorClass extends Error {
 }
 
 export class EntityExistsError extends ErrorClass {
-	constructor(fieldName) {
+	constructor(knexError) {
 		// Call parent constructor.
 		super('An entity already exists with the submitted unique field values');
 
-		this.fieldName = fieldName;
-
-		// TODO: Add with knex database.
-		/*
 		// Parse knex error.
 		const matches = knexError.detail.match(/^Key \((.*)\)=\((.*)\) already exists.$/);
 		const field = matches[1];
@@ -41,7 +37,6 @@ export class EntityExistsError extends ErrorClass {
 				message: `A "${knexError.table}" entity already exists with the same value in the "${field}" field`,
 			},
 		};
-		*/
 	}
 }
 
@@ -91,12 +86,10 @@ export class UnidentifiedUserError extends ErrorClass {
 }
 
 export class ValidationError extends ErrorClass {
-	constructor() {
+	constructor(joiError) {
 		// Call parent constructor.
 		super('The submitted input failed to pass the required validation tests');
 
-		// TODO: Add with joi validator.
-		/*
 		// Retrieve original input.
 		this.input = joiError._object;
 
@@ -110,6 +103,5 @@ export class ValidationError extends ErrorClass {
 
 			return previousValue;
 		}, {});
-		*/
 	}
 }
