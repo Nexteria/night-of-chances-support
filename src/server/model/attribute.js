@@ -8,7 +8,7 @@ import Promise from 'bluebird';
 
 // Expose attribute base model.
 export default {
-	// Create new models by extend the current one.
+	// Create new models by extending the current one.
 	extend(model) {
 		// Call parent method.
 		super.extend(model);
@@ -21,8 +21,8 @@ export default {
 				color: String,
 			},
 		});
-		model.attributeValuePseudoModel = {
-			table: `${model.table}_attribute_value`,
+		model.attributeValueTable = {
+			name: `${model.table}_attribute_value`,
 			parentKeyfield: `${model.table}_key`,
 			attributeKeyfield: `${model.table}_attribute_key`,
 		};
@@ -74,11 +74,11 @@ export default {
 	},
 	destroyAttributeValues({ key }) {
 		return Promise.all(attributeDocuments.map((attributeDocument) => {
-			return knex(this.attributeValuePseudoModel.table)
+			return knex(this.attributeValueTable.name)
 				.delete()
 				.where({
-					[this.attributeValuePseudoModel.attributeKeyfield]: attributeDocument.key,
-					[this.attributeValuePseudoModel.attributeKeyfield]: attributeDocument.key,
+					[this.attributeValueTable.attributeKeyfield]: attributeDocument.key,
+					[this.attributeValueTable.attributeKeyfield]: attributeDocument.key,
 				});
 		}));
 	},
