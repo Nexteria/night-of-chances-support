@@ -9,7 +9,8 @@ export const up = (originalKnex) => {
 			.primary();
 		tab.string('name', 256)
 			.unique();
-		tab.string('color', 6);
+		tab.string('color', 6)
+			.defaultTo('eeeeee');
 	});
 };
 

@@ -2,9 +2,11 @@
 import * as dataType from '@/src/common/data_type';
 import knex from '@/src/server/knex';
 import Model from '@/src/server/model';
+import Validator from '@/src/server/lib/validator';
 
 // Load npm modules.
 import Promise from 'bluebird';
+import Joi from 'joi';
 
 // Expose attribute base model.
 export default {
@@ -17,21 +19,32 @@ export default {
 		model.attributeModel = Model.extend({
 			table: `${model.table}_attribute`,
 			fields: {
-				name: String,
-				color: String,
+				name: {
+					isRequired: true,
+					schema: Joi.string().max(256),
+				},
+				color: {
+					schema: Joi.string().length(6),
+				},
 			},
 		});
 		model.attributeValueTable = {
 			name: `${model.table}_attribute_value`,
-			parentKeyfield: `${model.table}_key`,
-			attributeKeyfield: `${model.table}_attribute_key`,
+			parentKeyField: `${model.table}_key`,
+			attributeKeyField: `${model.table}_attribute_key`,
 		};
+
+		// Add attribute value validator.
+		model.attributeValueValidator = new Validator(Joi.string().max(512));
 
 		// Pass on model to caller.
 		return model;
 	},
+	// Check if the attributes string values contained within an object.
 	validateAttributes(attributes) {
-		// TODO: check if its an object containing string values.
+		Object.keys(attributes).forEach((attributeName) => {
+			this.attributeValueValidator.validate(attributes[attributeName]);
+		});
 	},
 	retrieveAttributes(attributes) {
 		// Objectify attribute names.
@@ -69,10 +82,10 @@ export default {
 				}));
 			});
 	},
-	createAttributeValues() {
+	createAttributeValues(key) {
 
 	},
-	destroyAttributeValues({ key }) {
+	destroyAttributeValues(key) {
 		return Promise.all(attributeDocuments.map((attributeDocument) => {
 			return knex(this.attributeValueTable.name)
 				.delete()
@@ -84,24 +97,32 @@ export default {
 	},
 	// Create a single entity of the model.
 	create(values) {
+		let entityPrimaryKey = null;
 		return Promise.resolve()
 			.then(() => {
 				// Validate attributes.
 				this.validateAttributes(values.attributes);
 
-				// Retrieve attribute documents.
+				// Create the base entity.
+				super.create(dataType.object.shallowFilter(values, this.fieldNames()));
+			})
+			.then((createdEntity) => {
+				// Store the new entity key.
+				entityPrimaryKey = createdEntity[this.primaryKeyField.name];
+
+				// Retrieve the associated attribute documents.
 				return this.retrieveAttributes(values.attributes);
 			})
 			.then((attributeDocuments) => {
 				// Insert attribute values.
-
-			})
-
-
-
-
-
-				// Add attribute values.
+				return knex(this.attributeValueTable.name)
+					.insert(attributeDocuments.map((attributeDocument) => {
+						return {
+							value: values.attributes[attributeDocument.name],
+							[this.attributeValueTable.parentKeyField]: entityPrimaryKey,
+							[this.attributeValueTable.attributeKeyField]: attributeDocument[this.primaryKeyField.name],
+						};
+					}));
 			});
 	},
 	// Find all entities of the model matching the query.

@@ -48,23 +48,21 @@ export default {
 				schema[fieldName] = model.fields[fieldName].schema;
 
 				return schema;
-			}),
-		);;
+			}, {}),
+		);
 
 		// Outputs the schema for the query during model extension.
 		// - all specified keys must correspond to (fields + primary key field).
 		// - all present (fields + primary key field) must conform to the given rules.
-		buildQuerySchema() {
-			const result = {};
+		model.queryValuesValidator = new Validator(
+			model.fieldNames().reduce((schema, fieldName) => {
+				schema[fieldName] = model.fields[fieldName].schema;
 
-			this.fieldNames().forEach((fieldName) => {
-				result[fieldName] = this.fields[fieldName].schema;
-			});
-
-			result[this.primaryKeyField.name] = this.primaryKeyField.schema;
-
-			return result;
-		},
+				return schema;
+			}, {
+				[model.primaryKeyField.name]: model.primaryKeyField.schema,
+			}),
+		);
 
 		// Pass on model to caller.
 		return model;
