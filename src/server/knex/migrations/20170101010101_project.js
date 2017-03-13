@@ -8,8 +8,10 @@ export const up = (originalKnex) => {
 			.notNullable()
 			.primary();
 		tab.string('name', 256)
+			.notNullable()
 			.unique();
 		tab.string('token', 256)
+			.notNullable()
 			.unique();
 	});
 };
