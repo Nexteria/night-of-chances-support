@@ -7,9 +7,12 @@ export const up = (originalKnex) => {
 		tab.increments('key')
 			.notNullable()
 			.primary();
-		tab.string('first_name', 256);
-		tab.string('last_name', 256);
-		tab.string('email_address', 256);
+		tab.string('first_name', 256)
+			.notNullable();
+		tab.string('last_name', 256)
+			.notNullable();
+		tab.string('email_address', 256)
+			.notNullable();
 		tab.integer('project_key')
 			.notNullable()
 			.references('key')
