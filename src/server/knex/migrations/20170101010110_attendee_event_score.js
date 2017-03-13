@@ -4,8 +4,10 @@ export const up = (originalKnex) => {
 	const knex = knexMixin(originalKnex);
 
 	return knex.schema.createTable('attendee_event_score', (tab) => {
-		tab.string('value', 512);
-		tab.integer('score');
+		tab.string('value', 512)
+			.notNullable();
+		tab.integer('score')
+			.notNullable();
 		tab.integer('attendee_attribute_key')
 			.notNullable()
 			.references('key')
