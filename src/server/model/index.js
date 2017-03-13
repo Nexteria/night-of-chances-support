@@ -43,7 +43,7 @@ export default {
 		// Define validator from the schema for the update values.
 		// - all specified keys must correspond to fields.
 		// - all present fields must conform to the given rules.
-		model.createValuesValidator = new Validator(
+		model.updateValuesValidator = new Validator(
 			model.fieldNames().reduce((schema, fieldName) => {
 				schema[fieldName] = model.fields[fieldName].schema;
 
@@ -110,6 +110,10 @@ export default {
 				}
 			});
 	},
+	buildKnexQuery(query) {
+		return knex.instance(this.table)
+			.where(query || {});
+	},
 	// Find all entities of the model matching the query.
 	find(query) {
 		return Promise.resolve()
@@ -118,9 +122,8 @@ export default {
 				this.queryValidator.validate(query);
 
 				// Select values from the underlying data object.
-				return knex.instance(this.table)
-					.select(this.fieldNames(true))
-					.where(query || {});
+				return this.buildKnexQuery(query)
+					.select(this.fieldNames(true));
 			});
 	},
 	// Find all entities of the model matching the query.
@@ -132,9 +135,8 @@ export default {
 				this.queryValidator.validate(query);
 
 				// Exectute the query limited to a single value.
-				return knex.instance(this.table)
+				return this.buildKnexQuery(query)
 					.select(this.fieldNames(true))
-					.where(query || {})
 					.limit(1);
 			})
 			// Check if at least one value was found.
@@ -161,9 +163,8 @@ export default {
 				this.queryValidator.validate(query);
 
 				// Select the count from the underlying data object.
-				return knex.instance(this.table)
-					.count()
-					.where(query || {});
+				return this.buildKnexQuery(query)
+					.count();
 			})
 			.then((result) => {
 				return parseInt(result[0].count, 10);
@@ -180,9 +181,8 @@ export default {
 				this.queryValidator.validate(query);
 
 				// Update values in the underlying data object.
-				return knex.instance(this.table)
+				return this.buildKnexQuery(query)
 					.update(values)
-					.where(query || {})
 					.returning(this.fieldNames(true));
 			});
 	},
@@ -194,9 +194,8 @@ export default {
 				this.queryValidator.validate(query);
 
 				// Delete values from the underlying data object.
-				return knex.instance(this.table)
+				return this.buildKnexQuery(query)
 					.delete()
-					.where(query || {})
 					.returning(this.fieldNames(true));
 			});
 	},

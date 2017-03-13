@@ -82,66 +82,230 @@ export default {
 				}));
 			});
 	},
-	createAttributeValues(key) {
-
+	attributeValueFieldNames() {
+		return [
+			'value',
+			this.attributeValueTable.parentKeyField,
+			this.attributeValueTable.attributeKeyField,
+		];
 	},
-	destroyAttributeValues(key) {
-		return Promise.all(attributeDocuments.map((attributeDocument) => {
-			return knex(this.attributeValueTable.name)
-				.delete()
-				.where({
-					[this.attributeValueTable.attributeKeyfield]: attributeDocument.key,
-					[this.attributeValueTable.attributeKeyfield]: attributeDocument.key,
+	createAttributeValues(entityPrimaryKey, attributeDocuments, attributeValues) {
+		// Insert attribute values.
+		return knex.instance(this.attributeValueTable.name)
+			.insert(attributeDocuments.map((attributeDocument) => {
+				return {
+					value: attributeValues[attributeDocument.name],
+					[this.attributeValueTable.parentKeyField]: entityPrimaryKey,
+					[this.attributeValueTable.attributeKeyField]: attributeDocument[this.primaryKeyField.name],
+				};
+			}))
+			.returning(this.attributeValueFieldNames());
+	},
+	destroyAttributeValues(entityPrimaryKey, attributeDocuments) {
+		// Delete attribute values.
+		return knex.instance(this.attributeValueTable.name)
+			.delete()
+			.where({
+				[this.attributeValueTable.parentKeyField]: entityPrimaryKey,
+			})
+			.whereIn(
+				this.attributeValueTable.attributeKeyfield,
+				attributeDocuments.map((attributeDocument) => {
+					return attributeDocument[this.attributeModel.primaryKeyField.name];
+				}),
+			)
+			.returning(this.attributeValueFieldNames());
+	},
+	// Add all associated attributes to the given document array.
+	appendAttributeValues(documents) {
+		// Add the attributes property to each document.
+		documents.forEach((document) => {
+			document.attributes = {};
+		});
+
+		// Create a map to find the element corresponding to a given document key.
+		const documentKeyMap = documents.reduce((map, document, index) => {
+			map[document[this.primaryKeyField.name]] = index;
+			return map;
+		}, {});
+
+		// Use a single query to retrieve the attribute values of all documents.
+		return knex.instance()
+			.select([
+				`${this.attributeValueTable.name}.${this.attributeValueTable.parentKeyField} AS "entity_key"`,
+				`${this.attributeModel.table}.name AS "name"`,
+				`${this.attributeValueTable.name}.value AS "value"`,
+			])
+			.from(this.attributeValueTable.name)
+			.join(
+				this.attributeModel.table,
+				`${this.attributeValueTable.name}.${this.attributeValueTable.attributeKeyField}`,
+				`${this.attributeModel.table}.${this.attributeModel.primaryKeyField.name}`,
+			)
+			.whereIn(
+				`${this.attributeValueTable.name}.${this.attributeValueTable.parentKeyField}`,
+				documents.map((document) => {
+					return document[this.primaryKeyField.name];
+				}),
+			)
+			.then((results) => {
+				// Fill the attributes object of each of the documents from the result.
+				results.forEach((result) => {
+					documents[documentKeyMap[result.entity_key]].attributes[result.name] = result.value;
 				});
-		}));
+
+				// Pass the modified documents.
+				return documents;
+			});
 	},
 	// Create a single entity of the model.
 	create(values) {
-		let entityPrimaryKey = null;
+		// Define storage variables.
+		let createdDocument = null;
+
 		return Promise.resolve()
 			.then(() => {
 				// Validate attributes.
 				this.validateAttributes(values.attributes);
 
-				// Create the base entity.
-				super.create(dataType.object.shallowFilter(values, this.fieldNames()));
+				// Create the base document.
+				return super.create(dataType.object.shallowFilter(values, this.fieldNames()));
 			})
-			.then((createdEntity) => {
-				// Store the new entity key.
-				entityPrimaryKey = createdEntity[this.primaryKeyField.name];
+			.then((document) => {
+				// Store the newly created document.
+				createdDocument = document;
 
 				// Retrieve the associated attribute documents.
 				return this.retrieveAttributes(values.attributes);
 			})
 			.then((attributeDocuments) => {
-				// Insert attribute values.
-				return knex(this.attributeValueTable.name)
-					.insert(attributeDocuments.map((attributeDocument) => {
-						return {
-							value: values.attributes[attributeDocument.name],
-							[this.attributeValueTable.parentKeyField]: entityPrimaryKey,
-							[this.attributeValueTable.attributeKeyField]: attributeDocument[this.primaryKeyField.name],
-						};
-					}));
+				// Add new values for the retrieved attributes.
+				return this.createAttributeValues(createdDocument[this.primaryKeyField.name],
+					attributeDocuments, values.attributes);
+			})
+			.then(() => {
+				// Append the associated attribute values to the updated documents.
+				return this.appendAttributeValues([createdDocument]);
+			})
+			.then((documents) => {
+				// Retrieve the single created document.
+				return documents[0];
 			});
+	},
+	buildKnexQuery(query) {
+		// Start with the base
+		return Object.keys(query.attributes).reduce((knexQuery, attributeName) => {
+			// Append a conjuctive subquery for each attribute name, value pair.
+			return knexQuery.whereIn(
+				this.primaryKeyField.name,
+				knex.instance(this.attributeValueTable.name)
+					.select(`${this.attributeValueTable.name}.${this.attributeValueTable.parentKeyField}`)
+					.join(
+						this.attributeModel.table,
+						`${this.attributeValueTable.name}.${this.attributeValueTable.attributeKeyField}`,
+						`${this.attributeModel.table}.${this.attributeModel.primaryKeyField.name}`,
+					)
+					.where({
+						[`${this.attributeModel.table}.name`]: attributeName,
+						[`${this.attributeValueTable.name}.value`]: query.attributes[attributeName],
+					}),
+			);
+		}, super.buildKnexQuery(dataType.object.shallowFilter(query, this.fieldNames(true))));
 	},
 	// Find all entities of the model matching the query.
 	find(query) {
-		// TODO: Search using attributes in query.
-		// TODO: Add attributes to result.
+		return Promise.resolve()
+			.then(() => {
+				// Fill in attributes if required.
+				if (!query.attributes) {
+					query.attributes = {};
+				}
+
+				// Validate attributes.
+				this.validateAttributes(query.attributes);
+
+				// Select values from the underlying data object.
+				return super.find(query);
+			})
+			.then((foundDocuments) => {
+				// Append the associated attribute values to the found documents.
+				return this.appendAttributeValues(foundDocuments);
+			});
 	},
 	// Find all entities of the model matching the query.
 	findOne(query) {
-		// TODO: Search using attributes in query.
-		// TODO: Add attributes to result.
+		return Promise.resolve()
+			.then(() => {
+				// Fill in attributes if required.
+				if (!query.attributes) {
+					query.attributes = {};
+				}
+
+				// Validate attributes.
+				this.validateAttributes(query.attributes);
+
+				// Select values from the underlying data object.
+				return super.findOne(query);
+			})
+			.then((foundDocument) => {
+				// Append the associated attribute values to the found document.
+				return this.appendAttributeValues([foundDocument]);
+			})
+			.then((documents) => {
+				return documents[0];
+			});
 	},
 	// Update all entities of the model matching the query with the supplied values.
 	update(query, values) {
-		// TODO: Search using attributes in query.
-		// TODO: Consider attributes in values.
-		// TODO: Add attributes to result.
+		// Define storage variables.
+		let updatedDocuments = [];
+		let attributeDocuments = [];
 
 		// Delete old attribute values.
+		return Promise.resolve()
+			.then(() => {
+				// Fill in attributes to the query if required.
+				if (!query.attributes) {
+					query.attributes = {};
+				}
 
+				// Validate attributes.
+				this.validateAttributes(query.attributes);
+
+				// Fill in attributes to the values if required.
+				if (!values.attributes) {
+					values.attributes = {};
+				}
+
+				// Update values in the underlying data object.
+				return super.update(query, values);
+			})
+			.then((documents) => {
+				// Store the updated documents.
+				updatedDocuments = documents;
+
+				// Retrieve the associated attribute documents.
+				return this.retrieveAttributes(values.attributes);
+			})
+			.then((documents) => {
+				// Store the retrieved attribute documents.
+				attributeDocuments = documents;
+
+				// Remove the original values of the retrieved attributes.
+				return Promise.all(updatedDocuments.map((updatedDocument) => {
+					return this.destroyAttributeValues(updatedDocument[this.primaryKeyField.name], attributeDocuments);
+				}));
+			})
+			.then(() => {
+				// Add new values for the retrieved attributes.
+				return Promise.all(updatedDocuments.map((updatedDocument) => {
+					return this.createAttributeValues(updatedDocument[this.primaryKeyField.name],
+						attributeDocuments, values.attributes);
+				}));
+			})
+			.then(() => {
+				// Append the associated attribute values to the updated documents.
+				return this.appendAttributeValues(updatedDocuments);
+			});
 	},
 };
