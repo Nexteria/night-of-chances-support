@@ -3,7 +3,7 @@ import knexMixin from '@/src/server/knex/mixin';
 export const up = (originalKnex) => {
 	const knex = knexMixin(originalKnex);
 
-	return knex.schema.createTable('event_attribute_values', (tab) => {
+	return knex.schema.createTable('event_attribute_value', (tab) => {
 		tab.string('value', 512);
 		tab.integer('event_key')
 			.notNullable()
@@ -21,5 +21,5 @@ export const up = (originalKnex) => {
 export const down = (originalKnex) => {
 	const knex = knexMixin(originalKnex);
 
-	return knex.schema.dropTable('event_attribute_values');
+	return knex.schema.dropTable('event_attribute_value');
 };

@@ -9,12 +9,8 @@ export const up = (originalKnex) => {
 			.primary();
 		tab.string('name', 256)
 			.unique();
-		tab.string('color', 6);
-		tab.integer('project_key')
-			.notNullable()
-			.references('key')
-			.inTable('project')
-			.onDelete('cascade');
+		tab.string('color', 6)
+			.defaultTo('eeeeee');
 	});
 };
 
