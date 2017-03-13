@@ -9,7 +9,7 @@ import Promise from 'bluebird';
 import Joi from 'joi';
 
 // Expose attribute base model.
-export default {
+export default Model.extend({
 	// Create new models by extending the current one.
 	extend(model) {
 		// Call parent method.
@@ -308,4 +308,4 @@ export default {
 				return this.appendAttributeValues(updatedDocuments);
 			});
 	},
-};
+});
