@@ -37,6 +37,11 @@ export default Model.extend({
 		// Add attribute value validator.
 		model.attributeValueValidator = new Validator(Joi.string().max(512));
 
+		// Extend the query validator.
+		model.queryValidator.schema = model.queryValidator.schema.keys({
+			attributes: Joi.object(),
+		});
+
 		// Pass on model to caller.
 		return model;
 	},
@@ -130,13 +135,12 @@ export default Model.extend({
 		}, {});
 
 		// Use a single query to retrieve the attribute values of all documents.
-		return knex.instance()
+		return knex.instance(this.attributeValueTable.name)
 			.select([
 				`${this.attributeValueTable.name}.${this.attributeValueTable.parentKeyField} AS "entity_key"`,
 				`${this.attributeModel.table}.name AS "name"`,
 				`${this.attributeValueTable.name}.value AS "value"`,
 			])
-			.from(this.attributeValueTable.name)
 			.join(
 				this.attributeModel.table,
 				`${this.attributeValueTable.name}.${this.attributeValueTable.attributeKeyField}`,
@@ -213,7 +217,7 @@ export default Model.extend({
 		}, super.buildKnexQuery(dataType.object.shallowFilter(query, this.fieldNames(true))));
 	},
 	// Find all entities of the model matching the query.
-	find(query) {
+	find(query = {}) {
 		return Promise.resolve()
 			.then(() => {
 				// Fill in attributes if required.
@@ -233,7 +237,7 @@ export default Model.extend({
 			});
 	},
 	// Find all entities of the model matching the query.
-	findOne(query) {
+	findOne(query = {}) {
 		return Promise.resolve()
 			.then(() => {
 				// Fill in attributes if required.
@@ -256,7 +260,7 @@ export default Model.extend({
 			});
 	},
 	// Update all entities of the model matching the query with the supplied values.
-	update(query, values) {
+	update(query = {}, values) {
 		// Define storage variables.
 		let updatedDocuments = [];
 		let attributeDocuments = [];

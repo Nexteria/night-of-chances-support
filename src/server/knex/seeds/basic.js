@@ -6,6 +6,9 @@ import Promise from 'bluebird';
 
 // TODO: Add entities.
 export const entities = {
+	project: [],
+	project_attribute: [],
+	project_attribute_value: [],
 };
 
 export const seed = (originalKnex) => {

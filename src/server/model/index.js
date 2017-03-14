@@ -28,7 +28,7 @@ export default {
 		// - all required fields must be present.
 		// - all specified keys must correspond to fields.
 		// - all present fields must conform to the given rules.
-		model.createValuesValidator = new Validator(
+		model.createValuesValidator = new Validator(Joi.object(
 			model.fieldNames().reduce((schema, fieldName) => {
 				const field = model.fields[fieldName];
 
@@ -38,23 +38,23 @@ export default {
 
 				return schema;
 			}, {}),
-		);
+		));
 
 		// Define validator from the schema for the update values.
 		// - all specified keys must correspond to fields.
 		// - all present fields must conform to the given rules.
-		model.updateValuesValidator = new Validator(
+		model.updateValuesValidator = new Validator(Joi.object(
 			model.fieldNames().reduce((schema, fieldName) => {
 				schema[fieldName] = model.fields[fieldName].schema;
 
 				return schema;
 			}, {}),
-		);
+		));
 
 		// Outputs the schema for the query during model extension.
 		// - all specified keys must correspond to (fields + primary key field).
 		// - all present (fields + primary key field) must conform to the given rules.
-		model.queryValuesValidator = new Validator(
+		model.queryValidator = new Validator(Joi.object(
 			model.fieldNames().reduce((schema, fieldName) => {
 				schema[fieldName] = model.fields[fieldName].schema;
 
@@ -62,7 +62,7 @@ export default {
 			}, {
 				[model.primaryKeyField.name]: model.primaryKeyField.schema,
 			}),
-		);
+		));
 
 		// Pass on model to caller.
 		return model;
@@ -79,6 +79,8 @@ export default {
 
 		return baseFieldNames;
 	},
+	table: '',
+	fields: {},
 	// Information about the primary key field.
 	primaryKeyField: {
 		name: 'key',
@@ -115,7 +117,7 @@ export default {
 			.where(query || {});
 	},
 	// Find all entities of the model matching the query.
-	find(query) {
+	find(query = {}) {
 		return Promise.resolve()
 			.then(() => {
 				// Validate query.
@@ -127,7 +129,7 @@ export default {
 			});
 	},
 	// Find all entities of the model matching the query.
-	findOne(query) {
+	findOne(query = {}) {
 		// Select values from the underlying data object.
 		return Promise.resolve()
 			.then(() => {
@@ -156,7 +158,7 @@ export default {
 		});
 	},
 	// Find the count of all entities of the model matching the query.
-	count(query) {
+	count(query = {}) {
 		return Promise.resolve()
 			.then(() => {
 				// Validate query.
@@ -171,7 +173,7 @@ export default {
 			});
 	},
 	// Update all entities of the model matching the query with the supplied values.
-	update(query, values) {
+	update(query = {}, values) {
 		return Promise.resolve()
 			.then(() => {
 				// Validate update values.
@@ -187,7 +189,7 @@ export default {
 			});
 	},
 	// Delete all entities of the model matching the query.
-	destroy(query) {
+	destroy(query = {}) {
 		return Promise.resolve()
 			.then(() => {
 				// Validate query.
