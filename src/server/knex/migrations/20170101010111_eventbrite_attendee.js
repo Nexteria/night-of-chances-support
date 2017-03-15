@@ -4,7 +4,8 @@ export const up = (originalKnex) => {
 	const knex = knexMixin(originalKnex);
 
 	return knex.schema.createTable('eventbrite_attendee', (tab) => {
-		tab.string('eventbrite_id', 256);
+		tab.string('id', 256);
+		tab.string('email_address', 256);
 		tab.text('data');
 		tab.integer('project_key')
 			.notNullable()

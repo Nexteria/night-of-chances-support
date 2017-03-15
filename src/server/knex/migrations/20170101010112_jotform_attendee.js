@@ -4,7 +4,7 @@ export const up = (originalKnex) => {
 	const knex = knexMixin(originalKnex);
 
 	return knex.schema.createTable('jotform_attendee', (tab) => {
-		tab.string('jotform_id', 256);
+		tab.string('id', 256);
 		tab.string('email_address', 256);
 		tab.text('data');
 		tab.integer('project_key')
