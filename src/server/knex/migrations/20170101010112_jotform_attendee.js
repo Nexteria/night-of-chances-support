@@ -6,7 +6,7 @@ export const up = (originalKnex) => {
 	return knex.schema.createTable('jotform_attendee', (tab) => {
 		tab.string('id', 256);
 		tab.string('email_address', 256);
-		tab.text('data');
+		tab.text('data'); // (name, surname, email, cv).
 		tab.integer('project_key')
 			.notNullable()
 			.references('key')
