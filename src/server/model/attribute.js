@@ -137,9 +137,9 @@ export default Model.extend({
 		// Use a single query to retrieve the attribute values of all documents.
 		return knex.instance(this.attributeValueTable.name)
 			.select([
-				`${this.attributeValueTable.name}.${this.attributeValueTable.parentKeyField} AS "entity_key"`,
-				`${this.attributeModel.table}.name AS "name"`,
-				`${this.attributeValueTable.name}.value AS "value"`,
+				`${this.attributeValueTable.name}.${this.attributeValueTable.parentKeyField} AS entity_key`,
+				`${this.attributeModel.table}.name AS name`,
+				`${this.attributeValueTable.name}.value AS value`,
 			])
 			.join(
 				this.attributeModel.table,
