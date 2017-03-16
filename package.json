@@ -9,8 +9,8 @@
     "eslint": "esw . --ext .js --format simple --color --cache",
     "eslint:watch": "npm run eslint -- --watch",
     "load:eventbrite_registrations": "babel-node src/server/load_eventbrite_registrations",
+    "load:jotform_preferences": "babel-node src/server/load_jotform_preferences",
     "googleapis:token": "babel-node src/server/google_token",
-
     "knex:migrate": "knex migrate:latest",
     "knex:migrate:make": "knex migrate:make",
     "knex:migrate:rollback": "knex migrate:rollback",

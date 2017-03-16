@@ -18,7 +18,7 @@ googleAuth.createClient()
 		);
 	})
 	.then((preferenceValues) => {
-		// Store the retrieved registration values.
+		// Store the retrieved preference values.
 		// TODO: Implement.
 		console.log(preferenceValues[0]);
 		console.log(preferenceValues.length);
