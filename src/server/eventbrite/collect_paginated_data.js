@@ -17,7 +17,7 @@ export default (endpointUrl, aggregatedProperty, parameters = {}) => {
 	}, (value) => {
 		return request({
 			method: 'GET',
-			url: `https://www.eventbriteapi.com/v3/${endpointUrl}`,
+			url: `https://www.eventbriteapi.com/v3${endpointUrl}`,
 			headers: {
 				Authorization: `Bearer ${config.APP_EVENTBRITE_PERSONAL_TOKEN}`,
 			},

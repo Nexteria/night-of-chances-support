@@ -19,37 +19,34 @@ knex.connect()
 	.then((projectDocuments) => {
 		// Verify if all project documents contain the eventbrite_event_id and is_active attribute.
 		projectDocuments.forEach((projectDocument) => {
-			if (!projectDocument.eventbrite_event_id) {
+			if (!projectDocument.attributes.eventbrite_event_id) {
 				throw new Error(`The project '${projectDocument.name}' is missing the 'eventbrite_event_id' attribute`);
 			}
 
-			if (!projectDocument.is_active) {
+			if (!projectDocument.attributes.is_active) {
 				throw new Error(`The project '${projectDocument.name}' is missing the 'is_active' attribute`);
 			}
 		});
 
 		// Filter only active project documents.
 		activeProjectDocuments = projectDocuments.filter((projectDocument) => {
-			return projectDocument.is_active === 'TRUE';
+			return projectDocument.attributes.is_active === 'TRUE';
 		});
 
-		console.log(activeProjectDocuments);
 		return Promise.all(activeProjectDocuments.map((activeProjectDocument) => {
 			return eventbriteCollectPaginatedData(
-				`/events/${activeProjectDocument.eventbrite_event_id}/attendees/`,
+				`/events/${activeProjectDocument.attributes.eventbrite_event_id}/attendees/`,
 				'attendees',
 			);
 		}));
-	})/*
+	})
 	.then((projectAttendeeData) => {
 		// Merge attendee data into active project documents.
 		activeProjectDocuments = dataType.array.shallowLeftMerge(
 			activeProjectDocuments, projectAttendeeData.map((attendees) => {
 				return { attendees };
 			}));
-
-		console.log(activeProjectDocuments);
-	})*/
+	})
 	.then(() => {
 		return knex.disconnect();
 	})
