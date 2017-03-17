@@ -35,7 +35,15 @@ export const generateAuthUrl = (scope) => {
 
 // Get a token from the google api and store it.
 export const retrieveToken = (code) => {
-	return Promise.promisify(createOAuth2Client().getToken)(code)
+	return new Promise((resolve, reject) => {
+		createOAuth2Client().getToken(code, (err, token) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve(token);
+			}
+		});
+	})
 		.then((token) => {
 			return fse.writeJsonAsync(tokenStorageFilePath, token, 'utf-8');
 		});
