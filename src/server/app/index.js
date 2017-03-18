@@ -11,9 +11,6 @@ import express from 'express';
 // Initialize app.
 const app = express();
 
-// Trust the proxy when retrieving the remote client's ip address.
-app.enable('trust proxy');
-
 // Apply settings that enables the parsing of incoming request bodies.
 const rawBodyCreator = (req, res, buf) => {
 	req.rawBody = buf.toString();
