@@ -14,7 +14,7 @@ googleAuth.createClient()
 		// Load data from the preferences sheet.
 		return googleSheet.getValues(
 			config.GOOGLE_SHEET_PREFERENCES_SPREADSHEET_ID,
-			'A:N',
+			config.GOOGLE_SHEET_PREFERENCES_RANGE,
 		);
 	})
 	.then((preferenceValues) => {
