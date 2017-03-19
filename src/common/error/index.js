@@ -15,6 +15,9 @@ export {
 	default as InvalidToken,
 } from '@/src/common/error/invalid_token';
 export {
+	default as MultipleEntitiesFound,
+} from '@/src/common/error/mutiple_entities_found';
+export {
 	default as UnauthorizedAccess,
 } from '@/src/common/error/unauthorized_access';
 export {
