@@ -51,7 +51,7 @@ export default Model.extend({
 			this.attributeValueValidator.validate(attributes[attributeName]);
 		});
 	},
-	retrieveAttributes(attributes) {
+	retrieveAttributes(attributes, transaction) {
 		// Objectify attribute names.
 		let objectifiedAttributes = Object.keys(attributes).map((attribute) => {
 			return {
@@ -83,6 +83,8 @@ export default Model.extend({
 						})
 						: this.attributeModel.create({
 							name: attribute.name,
+						}, {
+							transaction,
 						});
 				}));
 			});
@@ -94,10 +96,13 @@ export default Model.extend({
 			this.attributeValueTable.attributeKeyField,
 		];
 	},
-	createAttributeValues(entityPrimaryKey, attributeDocuments, attributeValues) {
+	createAttributeValues(entityPrimaryKey, attributeDocuments, attributeValues, transaction) {
 		// Insert attribute values.
 		return knex.instance(this.attributeValueTable.name)
-			.insert(attributeDocuments.map((attributeDocument) => {
+			.transacting(transaction)
+			.insert(attributeDocuments.filter((attributeDocument) => {
+				return attributeValues[attributeDocument.name];
+			}).map((attributeDocument) => {
 				return {
 					value: attributeValues[attributeDocument.name],
 					[this.attributeValueTable.parentKeyField]: entityPrimaryKey,
@@ -106,9 +111,10 @@ export default Model.extend({
 			}))
 			.returning(this.attributeValueFieldNames());
 	},
-	destroyAttributeValues(entityPrimaryKey, attributeDocuments) {
+	destroyAttributeValues(entityPrimaryKey, attributeDocuments, transaction) {
 		// Delete attribute values.
 		return knex.instance(this.attributeValueTable.name)
+			.transacting(transaction)
 			.delete()
 			.where({
 				[this.attributeValueTable.parentKeyField]: entityPrimaryKey,
@@ -163,38 +169,43 @@ export default Model.extend({
 			});
 	},
 	// Create a single entity of the model.
-	create(values) {
+	create(values, options = {}) {
 		// Define storage variables.
 		let createdDocument = null;
 
-		return Promise.resolve()
-			.then(() => {
-				// Validate attributes.
-				this.validateAttributes(values.attributes);
+		// Initialize a transaction.
+		return knex.instance.transaction((trx) => {
+			// Determine the transaction to be used.
+			const transaction = options.transaction || trx;
 
-				// Create the base document.
-				return super.create(dataType.object.shallowFilter(values, this.fieldNames()));
-			})
-			.then((document) => {
-				// Store the newly created document.
-				createdDocument = document;
+			// Validate attributes.
+			this.validateAttributes(values.attributes);
 
-				// Retrieve the associated attribute documents.
-				return this.retrieveAttributes(values.attributes);
-			})
-			.then((attributeDocuments) => {
-				// Add new values for the retrieved attributes.
-				return this.createAttributeValues(createdDocument[this.primaryKeyField.name],
-					attributeDocuments, values.attributes);
-			})
-			.then(() => {
-				// Append the associated attribute values to the updated documents.
-				return this.appendAttributeValues([createdDocument]);
-			})
-			.then((documents) => {
-				// Retrieve the single created document.
-				return documents[0];
-			});
+			// Create the base document.
+			return super.create(dataType.object.shallowFilter(values, this.fieldNames()), Object.assign({
+				transaction: trx,
+			}, options))
+				.then((document) => {
+					// Store the newly created document.
+					createdDocument = document;
+
+					// Retrieve the associated attribute documents.
+					return this.retrieveAttributes(values.attributes, transaction);
+				})
+				.then((attributeDocuments) => {
+					// Add new values for the retrieved attributes.
+					return this.createAttributeValues(createdDocument[this.primaryKeyField.name],
+						attributeDocuments, values.attributes, transaction);
+				})
+				.then(() => {
+					// Append the associated attribute values to the updated documents.
+					return this.appendAttributeValues([createdDocument]);
+				})
+				.then((documents) => {
+					// Retrieve the single created document.
+					return documents[0];
+				});
+		});
 	},
 	buildKnexQuery(query) {
 		// Start with the base
@@ -217,7 +228,7 @@ export default Model.extend({
 		}, super.buildKnexQuery(dataType.object.shallowFilter(query, this.fieldNames(true))));
 	},
 	// Find all entities of the model matching the query.
-	find(query = {}) {
+	find(query = {}, options = {}) {
 		return Promise.resolve()
 			.then(() => {
 				// Fill in attributes if required.
@@ -229,87 +240,69 @@ export default Model.extend({
 				this.validateAttributes(query.attributes);
 
 				// Select values from the underlying data object.
-				return super.find(query);
+				return super.find(query, options);
 			})
 			.then((foundDocuments) => {
 				// Append the associated attribute values to the found documents.
 				return this.appendAttributeValues(foundDocuments);
 			});
 	},
-	// Find all entities of the model matching the query.
-	findOne(query = {}) {
-		return Promise.resolve()
-			.then(() => {
-				// Fill in attributes if required.
-				if (!query.attributes) {
-					query.attributes = {};
-				}
-
-				// Validate attributes.
-				this.validateAttributes(query.attributes);
-
-				// Select values from the underlying data object.
-				return super.findOne(query);
-			})
-			.then((foundDocument) => {
-				// Append the associated attribute values to the found document.
-				return this.appendAttributeValues([foundDocument]);
-			})
-			.then((documents) => {
-				return documents[0];
-			});
-	},
 	// Update all entities of the model matching the query with the supplied values.
-	update(query = {}, values) {
+	update(query = {}, values = {}, options = {}) {
 		// Define storage variables.
 		let updatedDocuments = [];
 		let attributeDocuments = [];
 
-		// Delete old attribute values.
-		return Promise.resolve()
-			.then(() => {
-				// Fill in attributes to the query if required.
-				if (!query.attributes) {
-					query.attributes = {};
-				}
+		// Initialize a transaction.
+		return knex.instance.transaction((trx) => {
+			// Determine the transaction to be used.
+			const transaction = options.transaction || trx;
 
-				// Validate attributes.
-				this.validateAttributes(query.attributes);
+			// Fill in attributes to the query if required.
+			if (!query.attributes) {
+				query.attributes = {};
+			}
 
-				// Fill in attributes to the values if required.
-				if (!values.attributes) {
-					values.attributes = {};
-				}
+			// Validate attributes.
+			this.validateAttributes(query.attributes);
 
-				// Update values in the underlying data object.
-				return super.update(query, values);
-			})
-			.then((documents) => {
-				// Store the updated documents.
-				updatedDocuments = documents;
+			// Fill in attributes to the values if required.
+			if (!values.attributes) {
+				values.attributes = {};
+			}
 
-				// Retrieve the associated attribute documents.
-				return this.retrieveAttributes(values.attributes);
-			})
-			.then((documents) => {
-				// Store the retrieved attribute documents.
-				attributeDocuments = documents;
+			// Update values in the underlying data object.
+			return super.update(query, values, Object.assign({
+				transaction: trx,
+			}, options))
+				.then((documents) => {
+					// Store the updated documents.
+					updatedDocuments = documents;
 
-				// Remove the original values of the retrieved attributes.
-				return Promise.all(updatedDocuments.map((updatedDocument) => {
-					return this.destroyAttributeValues(updatedDocument[this.primaryKeyField.name], attributeDocuments);
-				}));
-			})
-			.then(() => {
-				// Add new values for the retrieved attributes.
-				return Promise.all(updatedDocuments.map((updatedDocument) => {
-					return this.createAttributeValues(updatedDocument[this.primaryKeyField.name],
-						attributeDocuments, values.attributes);
-				}));
-			})
-			.then(() => {
-				// Append the associated attribute values to the updated documents.
-				return this.appendAttributeValues(updatedDocuments);
-			});
+					// Retrieve the associated attribute documents.
+					return this.retrieveAttributes(values.attributes, transaction);
+				})
+				.then((documents) => {
+					// Store the retrieved attribute documents.
+					attributeDocuments = documents;
+
+					// Remove the original values of the retrieved attributes.
+					return Promise.all(updatedDocuments.map((updatedDocument) => {
+						return this.destroyAttributeValues(updatedDocument[this.primaryKeyField.name],
+							attributeDocuments, transaction);
+					}));
+				})
+				.then(() => {
+					// Add new values for the retrieved attributes.
+					return Promise.all(updatedDocuments.map((updatedDocument) => {
+						return this.createAttributeValues(updatedDocument[this.primaryKeyField.name],
+							attributeDocuments, values.attributes, transaction);
+					}));
+				})
+				.then(() => {
+					// Append the associated attribute values to the updated documents.
+					return this.appendAttributeValues(updatedDocuments);
+				});
+		});
 	},
 });

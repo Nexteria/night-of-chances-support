@@ -141,20 +141,17 @@ export default {
 			if (options.limit) {
 				knexQuery = knexQuery.limit(options.limit);
 			}
-			if (options.transaction) {
-				knexQuery = knexQuery.transacting(options.transaction);
-			}
 
 			// Return the knex query to be exectuted.
 			return knexQuery;
 		});
 	},
 	// Find a single entity of the model matching the query.
-	findOne(query = {}) {
+	findOne(query = {}, options = {}) {
 		// Exectute the find method limited to a single value.
-		return this.find(query, {
+		return this.find(query, Object.assign({
 			limit: 1,
-		})
+		}, options))
 			.then((documents) => {
 				// Check if at least one value was found.
 				if (documents.length === 0) {
@@ -166,14 +163,14 @@ export default {
 			});
 	},
 	// Find a single entity of the model matching the key.
-	findByKey(key) {
+	findByKey(key, options = {}) {
 		// Call the find one method with only the key in the query.
 		return this.findOne({
 			[this.primaryKeyField.name]: key,
-		});
+		}, options);
 	},
 	// Find the count of all entities of the model matching the query.
-	count(query = {}, options) {
+	count(query = {}, options = {}) {
 		// Initialize a promise.
 		return Promise.resolve().then(() => {
 			// Validate query.
@@ -184,11 +181,11 @@ export default {
 				.count();
 
 			// Process options.
-			if (options.transaction) {
-				knexQuery = knexQuery.transacting(options.transaction);
+			if (options.limit) {
+				knexQuery = knexQuery.limit(options.limit);
 			}
 
-			// Exectute the knex query.
+			// Return the knex query to be exectuted.
 			return knexQuery;
 		})
 		.then((result) => {
@@ -220,13 +217,13 @@ export default {
 		});
 	},
 	// Update a single entity of the model matching the query with the supplied values.
-	updateOne(query = {}, values) {
+	updateOne(query = {}, values, options = {}) {
 		// Initialize a transaction.
 		return knex.instance.transaction((trx) => {
 			// Exectute the update method with the submitted transaction.
-			return this.update(query, values, {
+			return this.update(query, values, Object.assign({
 				transaction: trx,
-			})
+			}, options))
 				.then((documents) => {
 					// Check if at least one value was altered.
 					if (documents.length === 0) {
@@ -244,11 +241,11 @@ export default {
 		});
 	},
 	// Update a single entity of the model matching the key with the supplied values.
-	updateByKey(key, values) {
+	updateByKey(key, values, options = {}) {
 		// Call the update one method with only the key in the query.
 		return this.updateOne({
 			[this.primaryKeyField.name]: key,
-		}, values);
+		}, values, options);
 	},
 	// Delete all entities of the model matching the query.
 	destroy(query = {}, options = {}) {
@@ -272,13 +269,13 @@ export default {
 		});
 	},
 	// Delete a single entity of the model matching the query.
-	destroyOne(query = {}) {
+	destroyOne(query = {}, options = {}) {
 		// Initialize a transaction.
 		return knex.instance.transaction((trx) => {
 			// Exectute the update method with the submitted transaction.
-			return this.destroy(query, {
+			return this.destroy(query, Object.assign({
 				transaction: trx,
-			})
+			}, options))
 				.then((documents) => {
 					// Check if at least one value was deleted.
 					if (documents.length === 0) {
@@ -296,11 +293,11 @@ export default {
 		});
 	},
 	// Delete a single entity of the model matching the key.
-	destroyByKey(key) {
+	destroyByKey(key, options = {}) {
 		// Call the destroy one method with only the key in the query.
 		return this.destroyOne({
 			[this.primaryKeyField.name]: key,
-		});
+		}, options);
 	},
 	// Update the entity indicated by the primary key that's part of the given document.
 	save(document) {
