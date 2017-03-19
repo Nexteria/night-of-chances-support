@@ -28,7 +28,7 @@ router.use('/project', attributeModelMiddleware(projectModel));
 
 // Declare not found usecase.
 router.use((req, res) => {
-	res.status(httpStatus.NOT_FOUND).send('Not Found');
+	res.status(httpStatus.NOT_FOUND).send('API resource not found');
 });
 
 // Expose router instance.
