@@ -1,6 +1,6 @@
 // Load app modules.
 import importMiddleware from '@/src/server/app/middleware/api/import';
-import baseApiMiddleware from '@/src/server/app/lib/base_api_middleware';
+import attributeModelMiddleware from '@/src/server/app/middleware/api/attribute_model';
 import attendeeModel from '@/src/server/model/attendee';
 import eventModel from '@/src/server/model/event';
 import projectModel from '@/src/server/model/project';
@@ -11,15 +11,25 @@ import {
 } from 'express';
 import httpStatus from 'http-status';
 
+// Create router instance.
 const router = expressRouter();
 
+// Add import middleware.
 router.use('/import', importMiddleware);
-router.use('/attendee', baseApiMiddleware(attendeeModel));
-router.use('/event', baseApiMiddleware(eventModel));
-router.use('/project', baseApiMiddleware(projectModel));
 
+// Add attendee model middleware.
+router.use('/attendee', attributeModelMiddleware(attendeeModel));
+
+// Add event model middleware.
+router.use('/event', attributeModelMiddleware(eventModel));
+
+// Add project model middleware.
+router.use('/project', attributeModelMiddleware(projectModel));
+
+// Declare not found usecase.
 router.use((req, res) => {
 	res.status(httpStatus.NOT_FOUND).send('Not Found');
 });
 
+// Expose router instance.
 export default router;
