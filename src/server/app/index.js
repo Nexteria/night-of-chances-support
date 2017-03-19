@@ -11,15 +11,8 @@ import express from 'express';
 // Initialize app.
 const app = express();
 
-// Apply settings that enables the parsing of incoming request bodies.
-const rawBodyCreator = (req, res, buf) => {
-	req.rawBody = buf.toString();
-};
-
 // Parse application/json bodies.
-app.use(bodyParser.json({
-	verify: rawBodyCreator,
-}));
+app.use(bodyParser.json());
 
 // Add serving of static content.
 app.use(express.static(paths.buildBrowser));
