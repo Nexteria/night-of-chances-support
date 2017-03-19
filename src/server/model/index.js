@@ -9,6 +9,7 @@ import * as dataType from '@/src/common/data_type';
 import {
 	EntityExists as EntityExistsError,
 	EntityNotFound as EntityNotFoundError,
+	MultipleEntitiesFound as MultipleEntitiesFoundError,
 } from '@/src/common/error';
 import knex from '@/src/server/knex';
 import Validator from '@/src/server/lib/validator';
@@ -87,137 +88,239 @@ export default {
 		schema: Joi.number().integer().min(0).max(2147483647),
 	},
 	// Create a single entity of the model.
-	create(values) {
-		return Promise.resolve()
-			.then(() => {
-				// Validate create values.
-				this.createValuesValidator.validate(values);
+	create(values, options = {}) {
+		// Initialize a promise.
+		return Promise.resolve().then(() => {
+			// Validate create values.
+			this.createValuesValidator.validate(values);
 
-				// Insert values into the underlying data object.
-				return knex.instance(this.table)
-					.insert(values)
-					.returning(this.fieldNames(true));
-			})
-			.then((createdDocuments) => {
-				return createdDocuments[0];
-			})
-			.catch((err) => {
-				switch (err.code) {
-					case '23505': {
-						throw new EntityExistsError(err);
-					}
-					default: {
-						throw err;
-					}
-				}
-			});
+			// Prepare to insert values into the underlying data object.
+			let knexQuery = knex.instance(this.table)
+				.insert(values)
+				.returning(this.fieldNames(true));
+
+			// Process options.
+			if (options.transaction) {
+				knexQuery = knexQuery.transacting(options.transaction);
+			}
+
+			// Exectute the knex query.
+			return knexQuery;
+		})
+		.then((documents) => {
+			// Return the single created entity.
+			return documents[0];
+		})
+		.catch((err) => {
+			// Process error based on type.
+			switch (err.code) {
+				case '23505':
+					throw new EntityExistsError(err);
+				default:
+					throw err;
+			}
+		});
 	},
+	// Prepare a pluggable knex query based on the query parameters.
 	buildKnexQuery(query) {
 		return knex.instance(this.table)
 			.where(query || {});
 	},
 	// Find all entities of the model matching the query.
-	find(query = {}) {
-		return Promise.resolve()
-			.then(() => {
-				// Validate query.
-				this.queryValidator.validate(query);
+	find(query = {}, options = {}) {
+		// Initialize a promise.
+		return Promise.resolve().then(() => {
+			// Validate query.
+			this.queryValidator.validate(query);
 
-				// Select values from the underlying data object.
-				return this.buildKnexQuery(query)
-					.select(this.fieldNames(true));
-			});
+			// Prepare to select values from the underlying data object.
+			let knexQuery = this.buildKnexQuery(query)
+				.select(this.fieldNames(true));
+
+			// Process options.
+			if (options.limit) {
+				knexQuery = knexQuery.limit(options.limit);
+			}
+			if (options.transaction) {
+				knexQuery = knexQuery.transacting(options.transaction);
+			}
+
+			// Return the knex query to be exectuted.
+			return knexQuery;
+		});
 	},
-	// Find all entities of the model matching the query.
+	// Find a single entity of the model matching the query.
 	findOne(query = {}) {
-		// Select values from the underlying data object.
-		return Promise.resolve()
-			.then(() => {
-				// Validate query.
-				this.queryValidator.validate(query);
-
-				// Exectute the query limited to a single value.
-				return this.buildKnexQuery(query)
-					.select(this.fieldNames(true))
-					.limit(1);
-			})
-			// Check if at least one value was found.
-			.then((foundDocuments) => {
-				if (foundDocuments.length === 0) {
+		// Exectute the find method limited to a single value.
+		return this.find(query, {
+			limit: 1,
+		})
+			.then((documents) => {
+				// Check if at least one value was found.
+				if (documents.length === 0) {
 					throw new EntityNotFoundError();
 				}
 
-				return foundDocuments[0];
+				// Return the found document.
+				return documents[0];
 			});
 	},
-	// Find entity of the model matching the key.
+	// Find a single entity of the model matching the key.
 	findByKey(key) {
-		// Call find one with only the key in the query.
+		// Call the find one method with only the key in the query.
 		return this.findOne({
 			[this.primaryKeyField.name]: key,
 		});
 	},
 	// Find the count of all entities of the model matching the query.
-	count(query = {}) {
-		return Promise.resolve()
-			.then(() => {
-				// Validate query.
-				this.queryValidator.validate(query);
+	count(query = {}, options) {
+		// Initialize a promise.
+		return Promise.resolve().then(() => {
+			// Validate query.
+			this.queryValidator.validate(query);
 
-				// Select the count from the underlying data object.
-				return this.buildKnexQuery(query)
-					.count();
-			})
-			.then((result) => {
-				return parseInt(result[0].count, 10);
-			});
+			// Prepare to select the count from the underlying data object.
+			let knexQuery = this.buildKnexQuery(query)
+				.count();
+
+			// Process options.
+			if (options.transaction) {
+				knexQuery = knexQuery.transacting(options.transaction);
+			}
+
+			// Exectute the knex query.
+			return knexQuery;
+		})
+		.then((result) => {
+			return parseInt(result[0].count, 10);
+		});
 	},
 	// Update all entities of the model matching the query with the supplied values.
-	update(query = {}, values) {
-		return Promise.resolve()
-			.then(() => {
-				// Validate update values.
-				this.updateValuesValidator.validate(values);
+	update(query = {}, values, options = {}) {
+		// Initialize a promise.
+		return Promise.resolve().then(() => {
+			// Validate update values.
+			this.updateValuesValidator.validate(values);
 
-				// Validate query.
-				this.queryValidator.validate(query);
+			// Validate query.
+			this.queryValidator.validate(query);
 
-				// Update values in the underlying data object.
-				return this.buildKnexQuery(query)
-					.update(values)
-					.returning(this.fieldNames(true));
-			});
+			// Prepare to update values in the underlying data object.
+			let knexQuery = this.buildKnexQuery(query)
+				.update(values)
+				.returning(this.fieldNames(true));
+
+			// Process options.
+			if (options.transaction) {
+				knexQuery = knexQuery.transacting(options.transaction);
+			}
+
+			// Exectute the knex query.
+			return knexQuery;
+		});
+	},
+	// Update a single entity of the model matching the query with the supplied values.
+	updateOne(query = {}, values) {
+		// Initialize a transaction.
+		return knex.instance.transaction((trx) => {
+			// Exectute the update method with the submitted transaction.
+			return this.update(query, values, {
+				transaction: trx,
+			})
+				.then((documents) => {
+					// Check if at least one value was altered.
+					if (documents.length === 0) {
+						throw new EntityNotFoundError();
+					}
+
+					// Check if more than one value was altered.
+					if (documents.length > 1) {
+						throw new MultipleEntitiesFoundError();
+					}
+
+					// Return the returned document.
+					return documents[0];
+				});
+		});
+	},
+	// Update a single entity of the model matching the key with the supplied values.
+	updateByKey(key, values) {
+		// Call the update one method with only the key in the query.
+		return this.updateOne({
+			[this.primaryKeyField.name]: key,
+		}, values);
 	},
 	// Delete all entities of the model matching the query.
-	destroy(query = {}) {
-		return Promise.resolve()
-			.then(() => {
-				// Validate query.
-				this.queryValidator.validate(query);
+	destroy(query = {}, options = {}) {
+		// Initialize a promise.
+		return Promise.resolve().then(() => {
+			// Validate query.
+			this.queryValidator.validate(query);
 
-				// Delete values from the underlying data object.
-				return this.buildKnexQuery(query)
-					.delete()
-					.returning(this.fieldNames(true));
-			});
+			// Prepare to delete values from the underlying data object.
+			let knexQuery = this.buildKnexQuery(query)
+				.delete()
+				.returning(this.fieldNames(true));
+
+			// Process options.
+			if (options.transaction) {
+				knexQuery = knexQuery.transacting(options.transaction);
+			}
+
+			// Exectute the knex query.
+			return knexQuery;
+		});
 	},
-	// Update entity indicated by the primary key that's part of the given document.
+	// Delete a single entity of the model matching the query.
+	destroyOne(query = {}) {
+		// Initialize a transaction.
+		return knex.instance.transaction((trx) => {
+			// Exectute the update method with the submitted transaction.
+			return this.destroy(query, {
+				transaction: trx,
+			})
+				.then((documents) => {
+					// Check if at least one value was deleted.
+					if (documents.length === 0) {
+						throw new EntityNotFoundError();
+					}
+
+					// Check if more than one value was deleted.
+					if (documents.length > 1) {
+						throw new MultipleEntitiesFoundError();
+					}
+
+					// Return the returned document.
+					return documents[0];
+				});
+		});
+	},
+	// Delete a single entity of the model matching the key.
+	destroyByKey(key) {
+		// Call the destroy one method with only the key in the query.
+		return this.destroyOne({
+			[this.primaryKeyField.name]: key,
+		});
+	},
+	// Update the entity indicated by the primary key that's part of the given document.
 	save(document) {
 		// Update values in the underlying data object with a copy of the document without the primary key field.
 		return this.update({
 			[this.primaryKeyField.name]: document[this.primaryKeyField.name],
 		}, dataType.object.shallowFilter(document, this.fieldNames()))
-			.then((savedDocuments) => {
-				return savedDocuments[0];
+			.then((documents) => {
+				// Return the returned document.
+				return documents[0];
 			});
 	},
-	// Delete entity indicated by the primary key that's part of the given document.
+	// Delete the entity indicated by the primary key that's part of the given document.
 	delete(document) {
 		return this.destroy({
 			[this.primaryKeyField.name]: document[this.primaryKeyField.name],
 		})
-			.then((deletedDocuments) => {
-				return deletedDocuments[0];
+			.then((documents) => {
+				// Return the returned document.
+				return documents[0];
 			});
 	},
 };
