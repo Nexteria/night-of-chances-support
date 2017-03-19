@@ -60,14 +60,15 @@ const appendRoutes = (router, model) => {
 		}))
 		// Define the single update endpoint.
 		.put('/:key', expressPromise((req, res) => {
-			return model.update({
-				[model.primaryKeyField.name]: req.params.key,
-			}, req.body)
+			return model.updateByKey(req.params.key, req.body)
 				.then((result) => {
 					res.status(httpStatus.OK).send(result);
 				})
 				.catch(ValidationError, (err) => {
 					res.status(httpStatus.BAD_REQUEST).send(err.details);
+				})
+				.catch(EntityNotFoundError, () => {
+					res.status(httpStatus.NOT_FOUND).send();
 				});
 		}))
 		// Define the delete endpoint.
@@ -82,14 +83,15 @@ const appendRoutes = (router, model) => {
 		}))
 		// Define the single delete endpoint.
 		.delete('/:key', expressPromise((req, res) => {
-			return model.destroy({
-				[model.primaryKeyField.name]: req.params.key,
-			})
+			return model.destroyByKey(req.params.key)
 				.then((result) => {
 					res.status(httpStatus.OK).send(result);
 				})
 				.catch(ValidationError, (err) => {
 					res.status(httpStatus.BAD_REQUEST).send(err.details);
+				})
+				.catch(EntityNotFoundError, () => {
+					res.status(httpStatus.NOT_FOUND).send();
 				});
 		}));
 };
