@@ -40,7 +40,7 @@ app.use(express.static(paths.buildBrowser));
 app.use('/api', apiMiddleware);
 
 // Add frontend rendering middleware.
-app.use('*', frontendMiddleware);
+app.use(frontendMiddleware);
 
 // Add error handling middleware.
 app.use(errorMiddleware);

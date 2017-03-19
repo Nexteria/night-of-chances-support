@@ -25,8 +25,9 @@ const matchAsync = Promise.promisify(match);
 // Cache ejs template.
 const ejsTemplate = fs.readFileSync(path.join(paths.srcBrowser, 'index.ejs'), 'utf-8');
 
-// Send all requests to index.html so browserHistory in React Router works.
+// Expose react frontend parser.
 export default expressPromise((req, res) => {
+	// Send all requests to index.html so browserHistory in React Router works.
 	return matchAsync({
 		routes,
 		location: req.url,
@@ -48,6 +49,7 @@ export default expressPromise((req, res) => {
 				return null;
 			}
 
-			return false;
+			// React router should handle all paths including the not found case.
+			throw new Error('React router should handle the not found case');
 		});
 });
