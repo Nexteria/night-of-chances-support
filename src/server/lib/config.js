@@ -16,22 +16,37 @@ dotenv.config();
 const config = Object.assign({}, process.env);
 
 // Load required config parameters from default env file.
-Object.keys(dotenv.parse(fs.readFileSync(path.join(paths.root, '.env.default'), 'utf-8')))
+const defaultConfig = dotenv.parse(fs.readFileSync(path.join(paths.root, '.env.default'), 'utf-8'));
+Object.keys(defaultConfig).forEach((key) => {
 	// Check if all keys are part of the config.
-	.forEach((key) => {
-		if (!(key in config)) {
-			throw new Error(`Required config '${key}' not found`);
-		}
-	});
+	if (!(key in config)) {
+		throw new Error(`Required config '${key}' not found`);
+	}
 
-// Apply modifications to config.
+	// Parse based on data type.
+	switch (defaultConfig[key]) {
+		case 'Boolean':
+			config[key] = config[key] === 'TRUE';
+			break;
+		case 'Integer':
+			config[key] = Number.parseInt(config[key], 10);
+			break;
+		case 'Float':
+			config[key] = Number.parseFloat(config[key]);
+			break;
+		case 'String':
+			break;
+		case 'JSON':
+			config[key] = JSON.parse(config[key]);
+			break;
+		default:
+			throw new Error(`Unknown data type '${defaultConfig[key]}' at key '${key}'`);
+	}
+});
+
+// Extend config with additional values.
 config.APP_VERSION = npmPackage.version;
 config.APP_IS_PRODUCTION = config.NODE_ENV === 'production';
-
-config.APP_HTTP_PORT = parseInt(config.APP_HTTP_PORT, 10);
-config.APP_DATABASE_PORT = parseInt(config.APP_DATABASE_PORT, 10);
-
-config.APP_GOOGLE_API_REDIRECT_SCOPES = JSON.parse(config.APP_GOOGLE_API_REDIRECT_SCOPES);
 
 // Export as module output.
 export default config;
