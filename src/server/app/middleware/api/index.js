@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
 
 // Load app modules.
-import attendeeApiMiddleware from '@/src/server/app/middleware/api/attendee';
-import eventApiMiddleware from '@/src/server/app/middleware/api/event';
-import projectApiMiddleware from '@/src/server/app/middleware/api/project';
-import expressPromise from '@/src/server/lib/express_promise';
+import baseApiMiddleware from '@/src/server/lib/base_api_middleware';
 import * as expressRequest from '@/src/server/lib/express_request';
+import attendeeModel from '@/src/server/model/attendee';
+import eventModel from '@/src/server/model/event';
+import projectModel from '@/src/server/model/project';
 
 // Load npm modules.
 import {
@@ -15,18 +15,16 @@ import httpStatus from 'http-status';
 
 const router = expressRouter();
 
-router.use('/attendee', attendeeApiMiddleware);
-router.use('/event', attendeeApiMiddleware);
-router.use('/project', attendeeApiMiddleware);
+router.use('/attendee', baseApiMiddleware(attendeeModel));
+router.use('/event', baseApiMiddleware(eventModel));
+router.use('/project', baseApiMiddleware(projectModel));
 
 router.use((req, res) => {
 	res.status(httpStatus.NOT_FOUND).send('Not Found');
 });
 
-export default router;
-
 // Define basic behaviour.
-export default (req, res) => {
+router.use((req, res) => {
 	console.log(expressRequest.getIpAddress(req));
 	console.log(req.httpVersion);
 	console.log(req.method);
@@ -35,4 +33,6 @@ export default (req, res) => {
 	console.log(req.rawBody);
 
 	res.status(httpStatus.OK).send();
-};
+});
+
+export default router;
