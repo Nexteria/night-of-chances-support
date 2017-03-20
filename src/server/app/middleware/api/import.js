@@ -1,86 +1,81 @@
 // Load app modules.
-import * as dataType from '@/src/common/data_type';
-import eventbriteCollectPaginatedData from '@/src/server/eventbrite/collect_paginated_data';
-import knex from '@/src/server/knex';
+import {
+	EntityNotFound as EntityNotFoundError,
+	Validation as ValidationError,
+} from '@/src/common/error';
+import eventbriteImportProjectAttendees from '@/src/server/eventbrite/import_project_attendees';
+import jotformImportProjectPreferences from '@/src/server/google/import_project_preferences';
+import expressPromise from '@/src/server/lib/express_promise';
 import ProjectModel from '@/src/server/model/project';
 
 // Load npm modules.
-import Promise from 'bluebird';
+import {
+	Router as expressRouter,
+} from 'express';
+import httpStatus from 'http-status';
 
-// Define variable for storing the active project documents.
-let activeProjectDocuments = [];
+// Create router instance.
+const router = expressRouter();
 
-// Initialize database connection.
-knex.connect()
-	.then(() => {
-		// Load all project documents.
-		return ProjectModel.find();
-	})
-	.then((projectDocuments) => {
-		// Verify if all project documents contain the eventbrite_event_id and is_active attribute.
-		projectDocuments.forEach((projectDocument) => {
-			if (!projectDocument.attributes.eventbrite_event_id) {
-				throw new Error(`The project '${projectDocument.name}' is missing the 'eventbrite_event_id' attribute`);
-			}
-
-			if (!projectDocument.attributes.is_active) {
-				throw new Error(`The project '${projectDocument.name}' is missing the 'is_active' attribute`);
-			}
+// Define a route for importing eventbrite registrations for a specific project.
+router.post('/eventbrite_registrations', expressPromise((req, res) => {
+	// Validate the sent payload.
+	if (!req.body) {
+		// Reponse with an invalid input error and the details.
+		return res.status(httpStatus.BAD_REQUEST).send({
+			project_key: "The request must contain the 'project_key' parameter.",
 		});
+	}
 
-		// Filter only active project documents.
-		activeProjectDocuments = projectDocuments.filter((projectDocument) => {
-			return projectDocument.attributes.is_active === 'TRUE';
+	// Load the project.
+	return ProjectModel.findByKey(req.body.project_key)
+		.then((projectDocument) => {
+			// Execute the import project procedure.
+			return eventbriteImportProjectAttendees(projectDocument);
+		})
+		.then(() => {
+			// Repond with an OK status.
+			return res.status(httpStatus.OK).send();
+		})
+		.catch(ValidationError, (err) => {
+			// Respond with an invalid input error and the details.
+			return res.status(httpStatus.BAD_REQUEST).send(err.details);
+		})
+		.catch(EntityNotFoundError, () => {
+			// Repond with a project not found error.
+			return res.status(httpStatus.NOT_FOUND).send();
 		});
+}));
 
-		return Promise.all(activeProjectDocuments.map((activeProjectDocument) => {
-			return eventbriteCollectPaginatedData(
-				`/events/${activeProjectDocument.attributes.eventbrite_event_id}/attendees/`,
-				'attendees',
-			);
-		}));
-	})
-	.then((projectAttendeeData) => {
-		// Merge attendee data into active project documents.
-		activeProjectDocuments = dataType.array.shallowLeftMerge(
-			activeProjectDocuments, projectAttendeeData.map((attendees) => {
-				return { attendees };
-			}));
-	})
-	.then(() => {
-		return knex.disconnect();
-	})
-	.catch((err) => {
-		throw err;
-	});
+// Define a route for importing jotform preferences for a specific project.
+router.post('/jotform_preferences', expressPromise((req, res) => {
+	// Validate the sent payload.
+	if (!req.body) {
+		// Reponse with an invalid input error and the details.
+		return res.status(httpStatus.BAD_REQUEST).send({
+			project_key: "The request must contain the 'project_key' parameter.",
+		});
+	}
 
-/* eslint-disable no-console */
+	// Load the project.
+	return ProjectModel.findByKey(req.body.project_key)
+		.then((projectDocument) => {
+			// Execute the import project procedure.
+			return jotformImportProjectPreferences(projectDocument);
+		})
+		.then(() => {
+			// Repond with an OK status.
+			return res.status(httpStatus.OK).send();
+		})
+		.catch(ValidationError, (err) => {
+			// Respond with an invalid input error and the details.
+			return res.status(httpStatus.BAD_REQUEST).send(err.details);
+		})
+		.catch(EntityNotFoundError, () => {
+			// Repond with a project not found error.
+			return res.status(httpStatus.NOT_FOUND).send();
+		});
+}));
 
-// Load app modules.
-import * as googleAuth from '@/src/server/google/auth';
-import * as googleSheet from '@/src/server/google/sheet';
-import config from '@/src/server/lib/config';
-
-// Initialize google auth client.
-googleAuth.createClient()
-	.then((googleAuthClient) => {
-		// Set authentication client for the google sheet module.
-		googleSheet.setAuth(googleAuthClient);
-
-		// Load data from the preferences sheet.
-		return googleSheet.getValues(
-			config.GOOGLE_SHEET_PREFERENCES_SPREADSHEET_ID,
-			config.GOOGLE_SHEET_PREFERENCES_RANGE,
-		);
-	})
-	.then((preferenceValues) => {
-		// Store the retrieved preference values.
-		// TODO: Implement.
-		console.log(preferenceValues[0]);
-		console.log(preferenceValues.length);
-	})
-	.catch((err) => {
-		// Crash and report error on failure.
-		throw err;
-	});
-
+// Expose router instance.
+export default router;
