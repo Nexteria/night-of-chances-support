@@ -7,6 +7,8 @@ export const seed = (originalKnex) => {
 	let projectKey = null;
 	let isActiveAttributeKey = null;
 	let eventbriteEventIdAttributeKey = null;
+	let jotformExportGoogleSpreadsheetIdKey = null;
+	let jotformExportGoogleSpreadsheetRangeKey = null;
 
 	return knex('project')
 		.insert({
@@ -35,6 +37,24 @@ export const seed = (originalKnex) => {
 		.then((result) => {
 			eventbriteEventIdAttributeKey = result[0];
 
+			return knex('project_attribute')
+				.insert({
+					name: 'jotform_export_google_spreadsheet_id',
+				})
+				.returning('key');
+		})
+		.then((result) => {
+			jotformExportGoogleSpreadsheetIdKey = result[0];
+
+			return knex('project_attribute')
+				.insert({
+					name: 'jotform_export_google_spreadsheet_range',
+				})
+				.returning('key');
+		})
+		.then((result) => {
+			jotformExportGoogleSpreadsheetRangeKey = result[0];
+
 			return knex('project_attribute_value')
 				.insert({
 					value: 'TRUE',
@@ -48,6 +68,22 @@ export const seed = (originalKnex) => {
 					value: '31324642850',
 					project_key: projectKey,
 					project_attribute_key: eventbriteEventIdAttributeKey,
+				});
+		})
+		.then(() => {
+			return knex('project_attribute_value')
+				.insert({
+					value: '1VWCfpfmuHqDaYtwxBqMuwhd_mS0jpS1FfvrVxXbsoz4',
+					project_key: projectKey,
+					project_attribute_key: jotformExportGoogleSpreadsheetIdKey,
+				});
+		})
+		.then(() => {
+			return knex('project_attribute_value')
+				.insert({
+					value: 'A:N',
+					project_key: projectKey,
+					project_attribute_key: jotformExportGoogleSpreadsheetRangeKey,
 				});
 		});
 };
