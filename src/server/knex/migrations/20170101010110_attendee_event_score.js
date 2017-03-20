@@ -4,6 +4,9 @@ export const up = (originalKnex) => {
 	const knex = knexMixin(originalKnex);
 
 	return knex.schema.createTable('attendee_event_score', (tab) => {
+		tab.increments('key')
+			.notNullable()
+			.primary();
 		tab.string('value', 512)
 			.notNullable();
 		tab.integer('score')
