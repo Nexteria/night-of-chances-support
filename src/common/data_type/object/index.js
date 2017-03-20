@@ -3,6 +3,22 @@ export default class ObjectDataType {
 		return value instanceof Object;
 	}
 
+	static forEach(value, callback) {
+		Object.keys(value).forEach((key) => {
+			callback(key, value[key]);
+		});
+	}
+
+	static map(value, callback) {
+		const result = [];
+
+		this.forEach(value, (key, val) => {
+			result.push(callback(key, val));
+		});
+
+		return result;
+	}
+
 	static isEmpty(value) {
 		return JSON.stringify(value) === JSON.stringify({});
 	}
