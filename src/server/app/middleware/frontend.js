@@ -35,18 +35,16 @@ export default expressPromise((req, res) => {
 		.then((redirect, props) => {
 			// Handle `onEnter` hooks and redirection.
 			if (redirect) {
-				res.redirect(redirect.pathname + redirect.search);
-				return null;
+				return res.redirect(redirect.pathname + redirect.search);
 			}
 
 			if (props) {
 				// Render matched route based on props.
-				res.send(ejs.render(ejsTemplate, {
+				return res.send(ejs.render(ejsTemplate, {
 					html: renderToString(React.createElement(RouterContext, {
 						...props,
 					})),
 				}));
-				return null;
 			}
 
 			// React router should handle all paths including the not found case.

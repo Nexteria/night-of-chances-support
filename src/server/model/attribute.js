@@ -100,15 +100,17 @@ export default Model.extend({
 		// Insert attribute values.
 		return knex.instance(this.attributeValueTable.name)
 			.transacting(transaction)
-			.insert(attributeDocuments.filter((attributeDocument) => {
-				return attributeValues[attributeDocument.name];
-			}).map((attributeDocument) => {
-				return {
-					value: attributeValues[attributeDocument.name],
-					[this.attributeValueTable.parentKeyField]: entityPrimaryKey,
-					[this.attributeValueTable.attributeKeyField]: attributeDocument[this.primaryKeyField.name],
-				};
-			}))
+			.insert(attributeDocuments
+				.filter((attributeDocument) => {
+					return attributeValues[attributeDocument.name];
+				})
+				.map((attributeDocument) => {
+					return {
+						value: attributeValues[attributeDocument.name],
+						[this.attributeValueTable.parentKeyField]: entityPrimaryKey,
+						[this.attributeValueTable.attributeKeyField]: attributeDocument[this.primaryKeyField.name],
+					};
+				}))
 			.returning(this.attributeValueFieldNames());
 	},
 	destroyAttributeValues(entityPrimaryKey, attributeDocuments, transaction) {
