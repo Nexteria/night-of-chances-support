@@ -300,21 +300,20 @@ export default {
 		}, options);
 	},
 	// Update the entity indicated by the primary key that's part of the given document.
-	save(document) {
+	save(document, options = {}) {
+		// Filter values that are not the primary key field.
+		const values = dataType.object.shallowFilter(document, this.fieldNames());
+
 		// Update values in the underlying data object with a copy of the document without the primary key field.
-		return this.update({
-			[this.primaryKeyField.name]: document[this.primaryKeyField.name],
-		}, dataType.object.shallowFilter(document, this.fieldNames()))
+		return this.updateByKey(document[this.primaryKeyField.name], values, options)
 			.then((documents) => {
 				// Return the returned document.
 				return documents[0];
 			});
 	},
 	// Delete the entity indicated by the primary key that's part of the given document.
-	delete(document) {
-		return this.destroy({
-			[this.primaryKeyField.name]: document[this.primaryKeyField.name],
-		})
+	delete(document, options = {}) {
+		return this.destroyByKey(document[this.primaryKeyField.name], options)
 			.then((documents) => {
 				// Return the returned document.
 				return documents[0];
