@@ -18,14 +18,20 @@ Promise.promisifyAll(http);
 knex.connect()
 	.then((result) => {
 		// Output success message.
-		console.log(`Connected to database (Host: ${result.host} | Port: ${result.port} | Database: ${result.name})`);
+		console.log(
+			'Database connection established',
+			`(Host: ${result.host} | Port: ${result.port.toString()} | Database: ${result.name})`,
+		);
 
 		// Initialize http server.
-		return http.createServer(app).listenAsync(config.APP_HTTP_PORT);
+		return http.createServer(app).listenAsync(config.APP_HTTP_PORT, config.APP_HTTP_IP);
 	})
 	.then(() => {
 		// Output success message.
-		console.log(`Http server listening on port ${config.APP_HTTP_PORT.toString()}`);
+		console.log(
+			'Http server initialized',
+			`(IP Address: ${config.APP_HTTP_IP} | Port ${config.APP_HTTP_PORT.toString()})`,
+		);
 	})
 	.catch((err) => {
 		// Crash and report error on failure.

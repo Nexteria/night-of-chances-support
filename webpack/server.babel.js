@@ -8,7 +8,7 @@ import webpack from 'webpack';
 import fs from 'fs';
 import path from 'path';
 
-// Expose configuration object.
+// Expose the configuration object.
 export default {
 	entry: [
 		'babel-polyfill',

@@ -1,28 +1,28 @@
 // Accumulate modules.
 export {
-	default as EntityExists,
+	default as EntityExistsError,
 } from '@/src/common/error/entity_exists';
 export {
-	default as EntityNotFound,
+	default as EntityNotFoundError,
 } from '@/src/common/error/entity_not_found';
 export {
-	default as IdentifiedUser,
+	default as IdentifiedUserError,
 } from '@/src/common/error/identified_user';
 export {
-	default as IncorrectPassword,
+	default as IncorrectPasswordError,
 } from '@/src/common/error/incorrect_password';
 export {
-	default as InvalidToken,
+	default as InvalidTokenError,
 } from '@/src/common/error/invalid_token';
 export {
-	default as MultipleEntitiesFound,
+	default as MultipleEntitiesFoundError,
 } from '@/src/common/error/mutiple_entities_found';
 export {
-	default as UnauthorizedAccess,
+	default as UnauthorizedAccessError,
 } from '@/src/common/error/unauthorized_access';
 export {
-	default as UnidentifiedUser,
+	default as UnidentifiedUserError,
 } from '@/src/common/error/unidentified_user';
 export {
-	default as Validation,
+	default as ValidationError,
 } from '@/src/common/error/validation';
