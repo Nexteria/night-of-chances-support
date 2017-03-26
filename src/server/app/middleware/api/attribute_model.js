@@ -1,9 +1,9 @@
 // Load app modules.
 import expressPromise from '@/src/server/lib/express_promise';
 import {
-	EntityExists as EntityExistsError,
-	EntityNotFound as EntityNotFoundError,
-	Validation as ValidationError,
+	EntityExistsError,
+	EntityNotFoundError,
+	ValidationError,
 } from '@/src/common/error';
 
 // Load npm modules.

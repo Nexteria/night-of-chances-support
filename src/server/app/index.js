@@ -45,5 +45,5 @@ app.use(frontendMiddleware);
 // Add error handling middleware.
 app.use(errorMiddleware);
 
-// Expose app.
+// Expose express app.
 export default app;

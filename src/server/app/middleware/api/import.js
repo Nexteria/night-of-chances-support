@@ -1,7 +1,7 @@
 // Load app modules.
 import {
-	EntityNotFound as EntityNotFoundError,
-	Validation as ValidationError,
+	EntityNotFoundError,
+	ValidationError,
 } from '@/src/common/error';
 import eventbriteImportProjectAttendees from '@/src/server/eventbrite/import_project_attendees';
 import jotformImportProjectPreferences from '@/src/server/google/import_project_preferences';

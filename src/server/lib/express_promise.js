@@ -10,22 +10,24 @@ const nextObject = {
 };
 
 // Converts a promise into a callback that is acceptable by express.
-// Depending on the result of the promise the following outcomes may occur:
-// - nextRouteObject: the next middleware (passed in the same router call) is executed.
-// - nextObject: the next middleware (passed in the following router call) is executed.
-// - anything else: no middleware is executed.
-// If an error is thrown within the promise the error middleware is executed.
+// If any of the special objects is returned as the result of the promise the next function is called.
+// Otherwise no following middleware is executed.
 const factory = (promiseCreator) => {
 	return (req, res, next) => {
 		Promise.resolve(promiseCreator(req, res))
 			.then((result) => {
 				if (result === nextRouteObject) {
+					// If the nextRouteObject was returned, the next middleware
+					// (passed in the same router call) is executed.
 					next('route');
 				} else if (result === nextObject) {
+					// If the nextObject was returned, the next middleware
+					// (passed in the following router call) is executed.
 					next();
 				}
 			})
 			.catch((err) => {
+				// If an error is thrown within the promise the error middleware is executed.
 				next(err);
 			});
 	};

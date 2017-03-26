@@ -7,9 +7,9 @@
 // Load app modules.
 import * as dataType from '@/src/common/data_type';
 import {
-	EntityExists as EntityExistsError,
-	EntityNotFound as EntityNotFoundError,
-	MultipleEntitiesFound as MultipleEntitiesFoundError,
+	EntityExistsError,
+	EntityNotFoundError,
+	MultipleEntitiesFoundError,
 } from '@/src/common/error';
 import knex from '@/src/server/knex';
 import Validator from '@/src/server/lib/validator';

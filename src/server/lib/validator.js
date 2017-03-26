@@ -1,6 +1,6 @@
 // Load app modules.
 import {
-	Validation as ValidationError,
+	ValidationError,
 } from '@/src/common/error';
 
 // Load npm modules.
