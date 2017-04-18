@@ -35,12 +35,14 @@ router.get('/submit/:ws_id', expressPromise(async (req, res) => {
 
 	const result = await knex.instance('mailer_list')
 		.update({
+			date_time_submitted: new Date(),
+			is_confirmed: is_confirmed === 'true',
+		})
+		.where({
 			email,
 			ws_id,
-			date_time_submitted: new Date(),
-			is_confirmed,
 		})
-		.returning([ws_id, is_confirmed]);
+		.returning(['ws_id', 'is_confirmed']);
 
 	if (result.length === 0) {
 		return res.status(httpStatus.BAD_REQUEST).send('Na dany workshop ste neboli pôvodne priradení.\n'
@@ -202,6 +204,8 @@ router.get('/send', expressPromise(async (req, res) => {
 
 		return array;
 	}, []);
+
+	await knex.instance('mailer_list').delete();
 
 	const result = await knex.instance('mailer_list')
 		.insert(listItems)

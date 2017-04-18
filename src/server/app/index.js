@@ -2,7 +2,8 @@
 // import apiMiddleware from '@/src/server/app/middleware/api';
 import confirmMiddleware from '@/src/server/app/middleware/confirm';
 import errorMiddleware from '@/src/server/app/middleware/error';
-import exportMiddleware from '@/src/server/app/middleware/export';
+import exportSpeedDateMiddleware from '@/src/server/app/middleware/export_sd';
+import exportWorkshopMiddleware from '@/src/server/app/middleware/export_ws';
 // import frontendMiddleware from '@/src/server/app/middleware/frontend';
 import config from '@/src/server/lib/config';
 import * as paths from '@/src/server/lib/paths';
@@ -46,7 +47,8 @@ app.use(express.static(paths.buildBrowser));
 app.use(express.static(paths.srcBrowserStatic));
 
 // Add export middleware.
-app.use('/export', exportMiddleware);
+app.use('/export_sd', exportSpeedDateMiddleware);
+app.use('/export_ws', exportWorkshopMiddleware);
 
 // Add confirm middleware.
 app.use('/confirm', confirmMiddleware);
