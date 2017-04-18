@@ -121,7 +121,8 @@ router.get('/:ws_id', expressPromise(async (req, res) => {
 
 	return res.status(httpStatus.OK).render('export', {
 		title: `Export ${workshopDocument.id}`,
-		workshopDocument,
+		type: 'Workshot',
+		eventDocument,
 		studentDocuments,
 	});
 }));

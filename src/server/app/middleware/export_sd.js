@@ -121,7 +121,8 @@ router.get('/:sd_id', expressPromise(async (req, res) => {
 
 	return res.status(httpStatus.OK).render('export', {
 		title: `Export ${speedDateDocument.id}`,
-		speedDateDocument,
+		type: 'Speed date',
+		eventDocument,
 		studentDocuments,
 	});
 }));
