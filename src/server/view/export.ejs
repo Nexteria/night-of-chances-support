@@ -42,7 +42,7 @@
 
 		</style>
 		<style media="print">
-			.hide {
+			.print-hide {
 				display: none;
 			}
 		</style>
@@ -76,7 +76,7 @@
 					<th>Telefón</th>
 					<th>Škola</th>
 					<th>Ročník</th>
-					<th class="hide">CV</th>
+					<th class="print-hide">CV</th>
 					<th>Potvrdený</th>
 				</tr>
 			</thead>
@@ -90,7 +90,7 @@
 					<td><%= studentDocument.Number %></td>
 					<td><%= studentDocument.School %></td>
 					<td><%= studentDocument.Grade %></td>
-					<td class="hide"><a href="<%= studentDocument.CVLink %>" target="_blank">odkaz</a></td>
+					<td class="print-hide"><a href="<%= studentDocument.CVLink %>" target="_blank">odkaz</a></td>
 					<td><%= studentDocument.isConfirmed ? 'ano' : 'nie' %></td>
 				</tr>
 				<% }); %>
