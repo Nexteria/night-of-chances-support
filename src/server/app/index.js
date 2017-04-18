@@ -1,5 +1,6 @@
 // Load app modules.
 // import apiMiddleware from '@/src/server/app/middleware/api';
+import confirmMiddleware from '@/src/server/app/middleware/confirm';
 import errorMiddleware from '@/src/server/app/middleware/error';
 import exportMiddleware from '@/src/server/app/middleware/export';
 // import frontendMiddleware from '@/src/server/app/middleware/frontend';
@@ -46,6 +47,9 @@ app.use(express.static(paths.srcBrowserStatic));
 
 // Add export middleware.
 app.use('/export', exportMiddleware);
+
+// Add confirm middleware.
+app.use('/confirm', confirmMiddleware);
 
 // Add api middleware.
 // app.use('/api', apiMiddleware);

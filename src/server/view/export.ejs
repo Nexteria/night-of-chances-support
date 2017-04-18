@@ -76,17 +76,17 @@
 			</thead>
 			<tbody>
 				<% studentDocuments.forEach(function (studentDocument, index) { %>
-					<tr>
-						<td><%= index + 1 %></td>
-						<td><%= studentDocument.FirstName %></td>
-						<td><%= studentDocument.LastName %></td>
-						<td><%= studentDocument.Email %></td>
-						<td><%= studentDocument.Number %></td>
-						<td><%= studentDocument.School %></td>
-						<td><%= studentDocument.Grade %></td>
-						<td><a href="<%= studentDocument.CVLink %>" target="_blank">odkaz</a></td>
-						<td><%= studentDocument.isConfirmed ? 'ano' : 'nie' %></td>
-					</tr>
+				<tr>
+					<td><%= index + 1 %></td>
+					<td><%= studentDocument.FirstName %></td>
+					<td><%= studentDocument.LastName %></td>
+					<td><%= studentDocument.Email %></td>
+					<td><%= studentDocument.Number %></td>
+					<td><%= studentDocument.School %></td>
+					<td><%= studentDocument.Grade %></td>
+					<td><a href="<%= studentDocument.CVLink %>" target="_blank">odkaz</a></td>
+					<td><%= studentDocument.isConfirmed ? 'ano' : 'nie' %></td>
+				</tr>
 				<% }); %>
 			</tbody>
 		</table>

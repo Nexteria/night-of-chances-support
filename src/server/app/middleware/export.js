@@ -30,7 +30,7 @@ router.get('/:ws_id', expressPromise(async (req, res) => {
 	// Load data from the crm workshop sheet.
 	const workshopSheet = await googleSheet.getValues(
 		'1f5_8hDlC7Y81ZRsVPjnIwcBiMPnA3JbD2be3y5ficYE',
-		"'Workshop-y'!A:BY",
+		"'Workshop-y'!A5:BY100",
 	);
 
 	const workshopDocument = workshopSheet.reduce((value, workshopValues) => {
@@ -83,7 +83,7 @@ router.get('/:ws_id', expressPromise(async (req, res) => {
 			case 'CVLink':
 				offsets.CVLink = sheetHeaderIndex;
 				break;
-			case `${workshopDocument.id}Štud`:
+			case `${workshopDocument.id}Final`:
 				offsets.workshopAssign = sheetHeaderIndex;
 				break;
 			default:
