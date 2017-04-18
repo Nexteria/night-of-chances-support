@@ -39,6 +39,12 @@
 				padding: 0.4em;
 				border: thin solid silver;
 			}
+
+		</style>
+		<style media="print">
+			.hide {
+				display: none;
+			}
 		</style>
 
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -67,11 +73,11 @@
 					<th>Meno</th>
 					<th>Priezvisko</th>
 					<th>Email</th>
-					<th>Telefon</th>
+					<th>Telefón</th>
 					<th>Škola</th>
 					<th>Ročník</th>
-					<th>CV</th>
-					<th>Potvrdeny</th>
+					<th class="hide">CV</th>
+					<th>Potvrdený</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -84,7 +90,7 @@
 					<td><%= studentDocument.Number %></td>
 					<td><%= studentDocument.School %></td>
 					<td><%= studentDocument.Grade %></td>
-					<td><a href="<%= studentDocument.CVLink %>" target="_blank">odkaz</a></td>
+					<td class="hide"><a href="<%= studentDocument.CVLink %>" target="_blank">odkaz</a></td>
 					<td><%= studentDocument.isConfirmed ? 'ano' : 'nie' %></td>
 				</tr>
 				<% }); %>

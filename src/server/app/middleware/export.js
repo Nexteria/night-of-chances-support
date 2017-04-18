@@ -105,7 +105,7 @@ router.get('/:ws_id', expressPromise(async (req, res) => {
 
 			return {
 				...studentDocument,
-				isConfirmed: studentDocument.workshopAssign === '1',
+				isConfirmed: studentDocument.workshopAssign === 'P',
 			};
 		});
 
