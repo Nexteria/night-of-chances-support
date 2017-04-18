@@ -71,7 +71,7 @@ router.get('/:ws_id', expressPromise(async (req, res) => {
 			case 'Email':
 				offsets.Email = sheetHeaderIndex;
 				break;
-			case 'Number':
+			case 'NumberScreen':
 				offsets.Number = sheetHeaderIndex;
 				break;
 			case 'School':
@@ -108,6 +108,16 @@ router.get('/:ws_id', expressPromise(async (req, res) => {
 				isConfirmed: studentDocument.workshopAssign === 'P',
 			};
 		});
+
+	studentDocuments.sort((a, b) => {
+		if (a.isConfirmed && !b.isConfirmed) {
+			return -1;
+		}
+		if (!a.isConfirmed && b.isConfirmed) {
+			return 1;
+		}
+		return 0;
+	});
 
 	return res.status(httpStatus.OK).render('export', {
 		title: `Export ${workshopDocument.id}`,
