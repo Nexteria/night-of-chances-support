@@ -1,6 +1,8 @@
 // Load app modules.
 import * as googleAuth from '@/src/server/google/auth';
 import * as googleSheet from '@/src/server/google/sheet';
+import config from '@/src/server/lib/config';
+import expressBasicAuth from '@/src/server/lib/express_basic_auth';
 import expressPromise from '@/src/server/lib/express_promise';
 
 // Load npm modules.
@@ -11,6 +13,12 @@ import httpStatus from 'http-status';
 
 // Create router instance.
 const router = expressRouter();
+
+router.use(expressBasicAuth(
+	config.APP_BASIC_AUTH_REALM,
+	config.APP_BASIC_AUTH_NAME,
+	config.APP_BASIC_AUTH_PASSWORD,
+));
 
 router.get('/:ws_id', expressPromise(async (req, res) => {
 	// Initialize google auth client.

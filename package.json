@@ -49,6 +49,7 @@
     "babel-preset-react": "^6.23.0",
     "babel-register": "^6.23.0",
     "babel-root-import": "^4.1.8",
+    "basic-auth": "^1.1.0",
     "bluebird": "^3.4.7",
     "body-parser": "^1.16.1",
     "dotenv": "^4.0.0",
