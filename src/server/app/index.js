@@ -42,6 +42,7 @@ if (config.APP_HTTP_ENABLE_LOGGER) {
 
 // Add serving of static content.
 app.use(express.static(paths.buildBrowser));
+app.use(express.static(paths.srcBrowserStatic));
 
 // Add export middleware.
 app.use('/export', exportMiddleware);
