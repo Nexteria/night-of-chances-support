@@ -3,17 +3,17 @@ import knexMixin from '@/src/server/knex/mixin';
 export const up = (originalKnex) => {
 	const knex = knexMixin(originalKnex);
 
-	return knex.schema.createTable('event_attribute_value', (tab) => {
+	return knex.schema.createTable('unresolved_preference_attribute_value', (tab) => {
 		tab.string('value', 512);
-		tab.integer('event_key')
+		tab.integer('unresolved_preference_key')
 			.notNullable()
 			.references('key')
-			.inTable('event')
+			.inTable('unresolved_preference')
 			.onDelete('cascade');
-		tab.integer('event_attribute_key')
+		tab.integer('unresolved_preference_attribute_key')
 			.notNullable()
 			.references('key')
-			.inTable('event_attribute')
+			.inTable('unresolved_preference_attribute')
 			.onDelete('cascade');
 	});
 };
@@ -21,5 +21,5 @@ export const up = (originalKnex) => {
 export const down = (originalKnex) => {
 	const knex = knexMixin(originalKnex);
 
-	return knex.schema.dropTable('event_attribute_value');
+	return knex.schema.dropTable('unresolved_preference_attribute_value');
 };
