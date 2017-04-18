@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "npm run nodemon",
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "esw . --ext .js --format simple --color --cache",
     "eslint:watch": "npm run eslint -- --watch",
