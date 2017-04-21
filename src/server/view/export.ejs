@@ -59,11 +59,17 @@
 			<h1><img src="/logo.jpg" alt="Night of Chances logo" height="120" width="150" /></h1>
 
 			<ul>
-				<li><strong><%= type %></strong>: <%= eventDocument.name %></li>
-				<li><strong>Firma</strong>: <%= eventDocument.firm %></li>
-				<li><strong>Čas</strong>: <%= eventDocument.time %></li>
-				<li><strong>Miestnosť</strong>: <%= eventDocument.room %></li>
-				<li><strong>Buddy</strong>: <%= eventDocument.buddy %></li>
+				<li><strong><%= type %></strong>: <%= eventDocument.Name2 %></li>
+				<li><strong>Firma</strong>: <%= eventDocument.Name1 %></li>
+				<li><strong>Čas</strong>: <%=
+					eventDocument.StartTime.split(' ')[1]
+					+ ' - '
+					+ eventDocument.EndTime.split(' ')[1]
+				%></li>
+				<li><strong>Miestnosť</strong>: <%= eventDocument.Room %></li>
+				<% if (type === 'Workshop') { %>
+				<li><strong>Buddy</strong>: <%= eventDocument.Buddy %></li>
+				<% } %>
 			</ul>
 		</div>
 		<table>
@@ -87,10 +93,14 @@
 					<td><%= studentDocument.FirstName %></td>
 					<td><%= studentDocument.LastName %></td>
 					<td><%= studentDocument.Email %></td>
-					<td><%= studentDocument.Number %></td>
-					<td><%= studentDocument.School %></td>
-					<td><%= studentDocument.Grade %></td>
-					<td class="print-hide"><a href="<%= studentDocument.CVLink %>" target="_blank">odkaz</a></td>
+					<td><%= studentDocument.NumberScreen %></td>
+					<td><%= studentDocument.SchoolScreen %></td>
+					<td><%= studentDocument.GradeScreen %></td>
+					<td class="print-hide">
+						<% if (studentDocument.CVLink !== '') { %>
+						<a href="<%= studentDocument.CVLink %>" target="_blank">odkaz</a>
+						<% } %>
+					</td>
 					<td><%= studentDocument.isConfirmed ? 'áno' : 'nie' %></td>
 				</tr>
 				<% }); %>
