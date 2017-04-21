@@ -163,7 +163,7 @@ router.get('/reset', expressPromise(async (req, res) => {
 	// Determine the workshop assignment fields.
 	const workshopAssignmentFieldsMap = Object.keys(workshopDocuments)
 		.reduce((map, workshopId) => {
-			map[`${workshopId}Štud`] = workshopId;
+			map[`${workshopId}Final`] = workshopId;
 			return map;
 		}, {});
 
@@ -194,6 +194,9 @@ router.get('/reset', expressPromise(async (req, res) => {
 		}, []));
 
 	// Respond with a csv export suitable for importing.
+	res.header({
+		'Content-Type': 'text/plain',
+	});
 	res.status(httpStatus.OK).send(studentDocuments.map((studentDocument) => {
 		const result = [studentDocument.FirstName, studentDocument.LastName, studentDocument.Email];
 		Object.keys(workshopAssignmentFieldsMap).forEach((workshopAssignmentField) => {
