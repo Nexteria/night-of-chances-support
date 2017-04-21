@@ -1,16 +1,16 @@
 export const up = async (knex) => {
-	await knex.schema.createTable('mailer_list', (tab) => {
-		tab.string('email', 256)
+	await knex.schema.createTable('confirmation_list', (tab) => {
+		tab.string('barcode', 32)
 			.notNullable();
 		tab.string('ws_id', 8)
 			.notNullable();
-		tab.string('ws_name', 512)
-			.notNullable();
 		tab.dateTime('date_time_submitted');
 		tab.boolean('is_confirmed');
+
+		tab.primary(['barcode', 'ws_id']);
 	});
 };
 
 export const down = async (knex) => {
-	await knex.schema.dropTable('mailer_list');
+	await knex.schema.dropTable('confirmation_list');
 };
