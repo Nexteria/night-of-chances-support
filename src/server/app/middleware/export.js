@@ -5,6 +5,7 @@ import expressBasicAuth from '@/src/server/lib/express_basic_auth';
 import expressPromise from '@/src/server/lib/express_promise';
 
 // Load npm modules.
+import Promise from 'bluebird';
 import {
 	Router as expressRouter,
 } from 'express';
@@ -24,16 +25,19 @@ router.get('/ws/:ws_id', expressPromise(async (req, res) => {
 	const currentWorkshopId = req.params.ws_id;
 	const currentStudentWorkshopFinalField = `${currentWorkshopId}Final`;
 
-	// Load all of the workshop documents.
-	const workshopDocuments = await colorCrm.loadWorkshopDocuments();
+	// Load all of the workshop and student documents.
+	const [
+		workshopDocuments,
+		mappedStudentDocuments,
+	] = await Promise.all([
+		colorCrm.loadWorkshopDocuments(),
+		colorCrm.loadStudentDocuments(),
+	]);
 
-	// Verify if the  workshop id exists.
+	// Verify if the selected workshop id exists.
 	if (!(currentWorkshopId in workshopDocuments)) {
 		return res.status(httpStatus.BAD_REQUEST).send('Zadane workshop id neexistuje');
 	}
-
-	// Load all of the student documents.
-	const mappedStudentDocuments = await colorCrm.loadStudentDocuments();
 
 	// Filter student documents.
 	const studentDocuments = Object.keys(mappedStudentDocuments)
@@ -61,6 +65,7 @@ router.get('/ws/:ws_id', expressPromise(async (req, res) => {
 		return 0;
 	});
 
+	// Render the response.
 	return res.status(httpStatus.OK).render('export', {
 		title: `Workshop export ${currentWorkshopId}`,
 		type: 'Workshop',
@@ -74,15 +79,19 @@ router.get('/sd/:sd_id', expressPromise(async (req, res) => {
 	const currentSpeedDateId = req.params.sd_id;
 	const currentStudentSpeedDateFinalField = `${currentSpeedDateId}Final`;
 
-	// Load all of the speed date documents.
-	const speedDateDocuments = await colorCrm.loadSpeedDateDocuments();
+	// Load all of the speed date and student documents.
+	const [
+		speedDateDocuments,
+		mappedStudentDocuments,
+	] = await Promise.all([
+		colorCrm.loadSpeedDateDocuments(),
+		colorCrm.loadStudentDocuments(),
+	]);
 
+	// Verify if the selected workshop id exists.
 	if (!(currentSpeedDateId in speedDateDocuments)) {
 		return res.status(httpStatus.BAD_REQUEST).send('Zadane speed date id neexistuje');
 	}
-
-	// Load all of the student documents.
-	const mappedStudentDocuments = await colorCrm.loadStudentDocuments();
 
 	// Filter student documents.
 	const studentDocuments = Object.keys(mappedStudentDocuments)
@@ -110,6 +119,7 @@ router.get('/sd/:sd_id', expressPromise(async (req, res) => {
 		return 0;
 	});
 
+	// Render the response.
 	return res.status(httpStatus.OK).render('export', {
 		title: `Speed date export ${currentSpeedDateId}`,
 		type: 'Speed date',
