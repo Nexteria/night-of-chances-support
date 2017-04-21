@@ -1,5 +1,5 @@
 export const up = async (knex) => {
-	await knex.schema.createTable('confirmation_list', (tab) => {
+	await knex.schema.createTable('assignment_list', (tab) => {
 		tab.string('barcode', 32)
 			.notNullable();
 		tab.string('ws_id', 8)
@@ -12,5 +12,5 @@ export const up = async (knex) => {
 };
 
 export const down = async (knex) => {
-	await knex.schema.dropTable('confirmation_list');
+	await knex.schema.dropTable('assignment_list');
 };

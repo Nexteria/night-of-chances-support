@@ -1,0 +1,66 @@
+<%- include('_header.ejs', {
+	title: 'Zoznam účastníkov workshopu',
+	bodyId: 'confirm_list',
+}) %>
+	<div>
+		<h2>Neodpovedal</h2>
+		<table>
+			<thead>
+				<th>Workshop ID</th>
+				<th>Workshop Name</th>
+				<th>Email</th>
+			</thead>
+			<tbody>
+				<% pendingList.forEach(function (pendingDocument) { %>
+				<tr>
+					<td><%= pendingDocument.ws_id %></td>
+					<td><%= pendingDocument.ws_name %></td>
+					<td><%= pendingDocument.email %></td>
+				</tr>
+				<% }); %>
+			</tbody>
+		</table>
+	</div>
+	<div>
+		<h2>Potvrdil</h2>
+		<table>
+			<thead>
+				<th>Workshop ID</th>
+				<th>Workshop Name</th>
+				<th>Email</th>
+				<th>Odoslane</th>
+			</thead>
+			<tbody>
+				<% confirmedList.forEach(function (confirmedDocument) { %>
+				<tr>
+					<td><%= confirmedDocument.ws_id %></td>
+					<td><%= confirmedDocument.ws_name %></td>
+					<td><%= confirmedDocument.email %></td>
+					<td><%= confirmedDocument.date_time_submitted %></td>
+				</tr>
+				<% }); %>
+			</tbody>
+		</table>
+	</div>
+	<div>
+		<h2>Zamietol</h2>
+		<table>
+			<thead>
+				<th>Workshop ID</th>
+				<th>Workshop Name</th>
+				<th>Email</th>
+				<th>Odoslane</th>
+			</thead>
+			<tbody>
+				<% rejectedList.forEach(function (rejectedDocument) { %>
+				<tr>
+					<td><%= rejectedDocument.ws_id %></td>
+					<td><%= rejectedDocument.ws_name %></td>
+					<td><%= rejectedDocument.email %></td>
+					<td><%= rejectedDocument.date_time_submitted %></td>
+				</tr>
+				<% }); %>
+			</tbody>
+		</table>
+	</div>
+<%- include('_footer.ejs') %>

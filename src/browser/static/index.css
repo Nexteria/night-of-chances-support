@@ -1,21 +1,40 @@
-body {
+#export body {
 	padding: 1.5em;
 }
-h1, ul {
+#export h1,
+#export ul {
 	padding: 0;
 	margin: 0 0.4em;
 	float: left;
 	list-style: none;
 }
-div {
+#export div {
 	height: 150px;
 	clear: both;
 }
-th {
+#export th {
 	background: #333;
 	color: white;
 }
-td, th {
+#export td, th {
+	padding: 0.4em;
+	border: thin solid silver;
+}
+
+#confirm_list body {
+	padding: 1.5em;
+}
+#confirm_list div {
+	padding: 0;
+	margin: 0 0.4em;
+	float: left;
+	list-style: none;
+}
+#confirm_list th {
+	background: #333;
+	color: white;
+}
+#confirm_list td, th {
 	padding: 0.4em;
 	border: thin solid silver;
 }

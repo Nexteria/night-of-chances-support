@@ -1,7 +1,6 @@
 // Load app modules.
 import * as dataTypes from '@/src/common/data_type';
-import * as googleAuth from '@/src/server/google/auth';
-import * as googleSheet from '@/src/server/google/sheet';
+import * as colorCrm from '@/src/server/google/color_crm';
 import config from '@/src/server/lib/config';
 import expressBasicAuth from '@/src/server/lib/express_basic_auth';
 import expressPromise from '@/src/server/lib/express_promise';
@@ -18,14 +17,15 @@ import httpStatus from 'http-status';
 const router = expressRouter();
 
 router.get('/submit/:ws_id', expressPromise(async (req, res) => {
+	// Retrieve parameters from the request.
 	const ws_id = req.params.ws_id;
 	const {
-		name,
-		email,
+		barcode,
 		is_confirmed,
 	} = req.query;
 
-	const isInputValid = dataTypes.emailAddressString.validate(email)
+	// Validate the inputs.
+	const isInputValid = dataTypes.string.validate(barcode)
 		&& dataTypes.string.validate(ws_id)
 		&& ((is_confirmed === 'true') || (is_confirmed === 'false'));
 	if (!isInputValid) {
@@ -33,25 +33,50 @@ router.get('/submit/:ws_id', expressPromise(async (req, res) => {
 			+ `Prosím kontaktujte <${config.APP_CONTACT_MAIL}>`);
 	}
 
-	const result = await knex.instance('mailer_list')
-		.update({
-			date_time_submitted: new Date(),
-			is_confirmed: is_confirmed === 'true',
-		})
+	const [
+		stateChangeResult,
+		mappedWorkshopDocuments,
+	] = await Promise.all([
+		// Update the state in the confirmation list.
+		knex.instance('assignment_list')
+			.update({
+				date_time_submitted: new Date(),
+				is_confirmed: is_confirmed === 'true',
+			})
+			.where({
+				barcode,
+				ws_id,
+			}),
+		// Load all of the workshop documents.
+		colorCrm.loadWorkshopDocuments(),
+	]);
+
+	// Load all of the current student's confirmed workshop ids.
+	const confirmedWorkshopIdsResult = await knex.instance('assignment_list')
+		.select('ws_id')
 		.where({
-			email,
-			ws_id,
+			barcode,
+		});
+	const confirmedWorkshopIds = confirmedWorkshopIdsResult
+		.map((result) => {
+			return result.ws_id;
+		});
+
+	// Filter out only the current student's confirmed workshop documents.
+	const workshopDocuments = Object.keys(mappedWorkshopDocuments)
+		.map((workshopId) => {
+			return mappedWorkshopDocuments[workshopId];
 		})
-		.returning(['ws_id', 'is_confirmed']);
+		.filter((workshopDocument) => {
+			return confirmedWorkshopIds.indexOf(workshopDocument.Id) !== -1;
+		});
 
-	if (result.length === 0) {
-		return res.status(httpStatus.BAD_REQUEST).send('Na dany workshop ste neboli pôvodne priradení.\n'
-			+ `Ak došlo k chybe, prosím kontaktujte <${config.APP_CONTACT_MAIL}>`);
-	}
-
-	return res.status(httpStatus.OK).send(`Boli ste úspešne ${
-			is_confirmed ? 'zaradení' : 'vyradení'
-		} zo zoznamu účastníkov workshopu ${name}.`);
+	return res.status(httpStatus.OK).render('confirm_submit', {
+		currentWorkshopDocument: mappedWorkshopDocuments[ws_id],
+		workshopDocuments,
+		isValid: stateChangeResult.length > 0,
+		contactMail: config.APP_CONTACT_MAIL,
+	});
 }));
 
 router.use(expressBasicAuth(
@@ -60,160 +85,141 @@ router.use(expressBasicAuth(
 	config.APP_BASIC_AUTH_PASSWORD,
 ));
 
-router.get('/view/:ws_id', expressPromise(async (req, res) => {
+router.get('/list/:ws_id', expressPromise(async (req, res) => {
+	// Retrieve parameters from the request.
 	const ws_id = req.params.ws_id;
 
+	// Validate the inputs.
 	if (!dataTypes.string.validate(ws_id)) {
 		return res.status(httpStatus.BAD_REQUEST).send('Odkaz neobsahuje požadované parametre.');
 	}
 
+	// Load resources in parallel.
 	const [
-		pendingList,
-		confirmedList,
-		rejectedList,
+		pendingListResult,
+		confirmedListResult,
+		rejectedListResult,
+		workshopDocuments,
+		studentDocuments,
 	] = await Promise.all([
-		knex.instance('mailer_list')
+		// Load the list of pending workshop assignments.
+		knex.instance('assignment_list')
+			.select('barcode')
 			.where({
 				ws_id,
 				is_confirmed: null,
 			})
-			.orderBy('ws_id')
-			.orderBy('email'),
-		knex.instance('mailer_list')
+			.orderBy('ws_id'),
+		// Load the list of pending workshop assignments.
+		knex.instance('assignment_list')
+			.select('barcode')
 			.where({
 				ws_id,
 				is_confirmed: true,
 			})
-			.orderBy('date_time_submitted', 'desc')
-			.orderBy('ws_id')
-			.orderBy('email'),
-		knex.instance('mailer_list')
+			.orderBy('date_time_submitted', 'desc'),
+		// Load the list of pending workshop assignments.
+		knex.instance('assignment_list')
+			.select('barcode')
 			.where({
 				ws_id,
 				is_confirmed: false,
 			})
-			.orderBy('date_time_submitted', 'desc')
-			.orderBy('ws_id')
-			.orderBy('email'),
+			.orderBy('date_time_submitted', 'desc'),
+		// Load all of the workshop documents.
+		colorCrm.loadWorkshopDocuments(),
+		// Load all of the student documents.
+		colorCrm.loadStudentDocuments(),
 	]);
 
 	return res.status(httpStatus.OK).render('lists', {
 		title: 'Zoznam respondentov',
-		pendingList,
-		confirmedList,
-		rejectedList,
+		workshopDocument: workshopDocuments[ws_id],
+		pendingList: pendingListResult
+			.map((barcode) => {
+				return studentDocuments[barcode];
+			}),
+		confirmedList: confirmedListResult
+			.map((barcode) => {
+				return studentDocuments[barcode];
+			}),
+		rejectedList: rejectedListResult
+			.map((barcode) => {
+				return studentDocuments[barcode];
+			}),
 	});
 }));
 
-router.get('/send', expressPromise(async (req, res) => {
-	// Initialize google auth client.
-	const googleAuthClient = await googleAuth.createClient();
+router.get('/reset', expressPromise(async (req, res) => {
+	// Load all the workshop and student documents.
+	const [
+		workshopDocuments,
+		mappedStudentDocuments,
+	] = await Promise.all([
+		colorCrm.loadWorkshopDocuments(),
+		colorCrm.loadStudentDocuments(),
+	]);
 
-	// Set authentication client for the google sheet module.
-	googleSheet.setAuth(googleAuthClient);
-
-	// Load data from the crm workshop sheet.
-	const workshopSheet = await googleSheet.getValues(
-		'1f5_8hDlC7Y81ZRsVPjnIwcBiMPnA3JbD2be3y5ficYE',
-		"'Workshop-y'!A5:BY100",
-	);
-
-	const workshopColumnOffsets = workshopSheet[0].reduce((offsets, sheetHeader, sheetHeaderIndex) => {
-		switch (sheetHeader) {
-			case 'Id':
-				offsets.Id = sheetHeaderIndex;
-				break;
-			case 'Name1':
-				offsets.Name1 = sheetHeaderIndex;
-				break;
-			case 'Name2':
-				offsets.Name2 = sheetHeaderIndex;
-				break;
-			case 'Prerequisites':
-				offsets.Prerequisites = sheetHeaderIndex;
-				break;
-			default:
-				break;
-		}
-
-		return offsets;
-	}, {});
-
-	const workshopDocumentMap = workshopSheet
-		.filter((studentValues, index) => {
-			return index > 0;
-		})
-		.map((workshopValues) => {
-			return Object.keys(workshopColumnOffsets).reduce((document, workshopHeaderName) => {
-				document[workshopHeaderName] = workshopValues[workshopColumnOffsets[workshopHeaderName]];
-				return document;
-			}, {});
-		})
-		.reduce((map, workshopDocument) => {
-			map[workshopDocument.Id] = workshopDocument;
+	// Determine the workshop assignment fields.
+	const workshopAssignmentFieldsMap = Object.keys(workshopDocuments)
+		.reduce((map, workshopId) => {
+			map[`${workshopId}Štud`] = workshopId;
 			return map;
 		}, {});
 
-	// Load data from the crm student sheet.
-	const studentSheet = await googleSheet.getValues(
-		'1f5_8hDlC7Y81ZRsVPjnIwcBiMPnA3JbD2be3y5ficYE',
-		"'Studenti'!A8:CT1000",
-	);
-
-	const workshopPrefIdMap = Object.keys(workshopDocumentMap).reduce((map, workshopId) => {
-		map[`${workshopId}Štud`] = workshopId;
-		return map;
-	}, {});
-
-	const studentColumnOffsets = studentSheet[0].reduce((offsets, sheetHeader, sheetHeaderIndex) => {
-		if (sheetHeader === 'Email') {
-			offsets.Email = sheetHeaderIndex;
-		} else if (sheetHeader in workshopPrefIdMap) {
-			offsets[workshopPrefIdMap[sheetHeader]] = sheetHeaderIndex;
-		}
-
-		return offsets;
-	}, {});
-
-	const studentDocuments = studentSheet
-		.filter((studentValues, index) => {
-			return index > 0;
-		})
-		.map((studentValues) => {
-			return Object.keys(studentColumnOffsets).reduce((document, studentHeaderName) => {
-				document[studentHeaderName] = studentValues[studentColumnOffsets[studentHeaderName]];
-				return document;
-			}, {});
+	// Transform the mapped student documents into an array.
+	const studentDocuments = Object.keys(mappedStudentDocuments)
+		.map((studentBarcode) => {
+			return mappedStudentDocuments[studentBarcode];
 		});
 
-	const listItems = studentDocuments.reduce((array, studentDocument) => {
-		const email = studentDocument.Email;
+	// Clear all of the assignments.
+	await knex.instance('assignment_list').delete();
 
-		Object.keys(studentDocument).forEach((studentDocumentKey) => {
-			if (studentDocumentKey in workshopDocumentMap) {
-				if (studentDocument[studentDocumentKey] === '1') {
-					const workshopDocument = workshopDocumentMap[studentDocumentKey];
-					array.push({
-						email,
-						ws_id: workshopDocument.Id,
-						ws_name: `${workshopDocument.Name1} - ${workshopDocument.Name2}`,
-					});
+	// Insert new records into the assignment list.
+	await knex.instance('assignment_list')
+		.insert(studentDocuments.reduce((array, studentDocument) => {
+			Object.keys(workshopAssignmentFieldsMap).forEach((workshopAssignmentField) => {
+				if (workshopAssignmentField in studentDocument) {
+					if (studentDocument[workshopAssignmentField] === '1') {
+						array.push({
+							barcode: studentDocument.Barcode,
+							ws_id: workshopAssignmentFieldsMap[workshopAssignmentField],
+						});
+					}
+				}
+			});
+
+			return array;
+		}, []));
+
+	// Respond with a csv export suitable for importing.
+	res.status(httpStatus.OK).send(studentDocuments.map((studentDocument) => {
+		const result = [studentDocument.FirstName, studentDocument.LastName, studentDocument.Email];
+		Object.keys(workshopAssignmentFieldsMap).forEach((workshopAssignmentField) => {
+			if (workshopAssignmentField in studentDocument) {
+				if (studentDocument[workshopAssignmentField] === '1') {
+					const workshopDocument = workshopDocuments[workshopAssignmentFieldsMap[workshopAssignmentField]];
+					result.push(
+						`${
+							workshopDocument.StartTime.split(' ')[1]
+						} ${
+							workshopDocument.Name1} ${workshopDocument.Name2
+						}`,
+						workshopDocument.Prerequisites,
+					//`http://138.68.85.91/confirm/submit/${workshopDocument.Id}?barcode=${studentDocument.Barcode}`,
+					);
 				}
 			}
 		});
-
-		return array;
-	}, []);
-
-	await knex.instance('mailer_list').delete();
-
-	const result = await knex.instance('mailer_list')
-		.insert(listItems)
-		.returning(['email', 'ws_id', 'ws_name']);
-
-	res.send(`Pridane do databazy\n${JSON.stringify(result, null, 2)}`);
+		return result.join(',');
+	}).join('\n'));
 }));
 
+router.get('/mail', expressPromise(async (req, res) => {
+	// Render the confirmation email.
+	res.send(httpStatus.OK).render('confirm_mail');
+}));
 
+// Expose the router instance.
 export default router;
-

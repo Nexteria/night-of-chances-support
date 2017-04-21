@@ -128,5 +128,5 @@ router.get('/sd/:sd_id', expressPromise(async (req, res) => {
 	});
 }));
 
-// Expose router instance.
+// Expose the router instance.
 export default router;

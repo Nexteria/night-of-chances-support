@@ -1,0 +1,39 @@
+<html>
+<head>
+</head>
+<body>
+	<p>Ahoj Veronika,</p>
+
+	<p>Let’s upgrade yourself!</p>
+	<p>Například i na těchto workshopech, prosim potvrdte alebo zamietnite ucast na nasledujucich workshopoch:</p>
+	{{ if (workshop_name_1) then workshop_name_1
+		<a href="{workshop_link_1}&is_confirmed=true">potvrdit</a>
+		<a href="{workshop_link_1}&is_confirmed=false">zamietnut</a> }}
+	{{ if (workshop_name_2) then workshop_name_2
+		<a href="{workshop_link_2}&is_confirmed=true">potvrdit</a>
+		<a href="{workshop_link_2}&is_confirmed=false">zamietnut</a> }}
+	{{ if (workshop_name_3) then workshop_name_3
+		<a href="{workshop_link_3}&is_confirmed=true">potvrdit</a>
+		<a href="{workshop_link_4}&is_confirmed=false">zamietnut</a> }}
+	{{ if (workshop_name_4) then workshop_name_4
+		<a href="{workshop_link_4}&is_confirmed=true">potvrdit</a>
+		<a href="{workshop_link_4}&is_confirmed=false">zamietnut</a> }}
+
+	<p>Podle tvého CV a tvých preferencí jsme Tě přiřadili na následující workshopy.
+	Přiřazování je alchymie a ne každý, kdo pošle CV se na ně i dostane.
+	Proto Ti gratulujeme!</p>
+
+	<p>Pro plnohodnotné zapojení se do některých workshopů budeš potřebovat:</p>
+	<ul>
+	{{ if (workshop_prerequisite_1) then <li>workshop_prerequisite_1</li> }}
+	{{ if (workshop_prerequisite_1) then <li>workshop_prerequisite_2</li> }}
+	{{ if (workshop_prerequisite_1) then <li>workshop_prerequisite_3</li> }}
+	{{ if (workshop_prerequisite_1) then <li>workshop_prerequisite_4</li> }}
+	</ul>
+
+	<p>Teším se na Tebe,</p>
+
+	Blanka
+	Night of Chances
+</body>
+</html>

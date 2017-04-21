@@ -1,0 +1,35 @@
+<%- include('_header.ejs', {
+	title: (isConfirmed ? 'Potvrdenie' : 'Zamietnutie') + ' účasti na workshop | Night of Chances',
+	bodyId: 'confirm_submit',
+}) %>
+	<% if (isValid) { %>
+	<p>Vaša účasť na workshope <%= currentWorkshopDocument.Name1 %> <%= currentWorkshopDocument.Name2 %>
+		bola úspešne <strong><%= isConfirmed ? 'potvrdená' : 'zamietnutá' %></strong>.</p>
+	<% } else { %>
+	<p>Došlo k chybe pri <%= isConfirmed ? 'potvrdzovaní' : 'zamietaní' %> vašej účasti,
+		prosím kontaktujte &lt;<%= contactMail %>&gt;.</p>
+	<% } %>
+	<p>Aktuálne máte potvrdenú účasť na nasledujúcich workshopoch:</p>
+	<table>
+		<thead>
+			<tr>
+				<th>Názov</th>
+				<th>Čas začiatku</th>
+				<th>Čas konca</th>
+				<th>Miestnosť</th>
+				<th>Potrebné príslušenstvo</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% workshopDocuments.forEach(function (workshopDocument) { %>
+			<tr>
+				<td><%= workshopDocument.Name1 %> <%= workshopDocument.Name2 %></td>
+				<td><%= workshopDocument.StartTime.split(' ')[1] %></td>
+				<td><%= workshopDocument.EndTime.split(' ')[1] %></td>
+				<td><%= workshopDocument.Room %></td>
+				<td><%= workshopDocument.Prerequisites %></td>
+			</tr>
+			<% }) %>
+		</tbody>
+	</table>
+<%- include('_footer.ejs') %>
