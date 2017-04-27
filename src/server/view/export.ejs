@@ -30,7 +30,9 @@
 				<th>Škola</th>
 				<th>Ročník</th>
 				<th class="print-hide">CV</th>
+				<% if (fieldType === 'Final') { %>
 				<th>Potvrdený</th>
+				<% } %>
 			</tr>
 		</thead>
 		<tbody>
@@ -48,7 +50,9 @@
 					<a href="<%= studentDocument.CVLink %>" target="_blank">odkaz</a>
 					<% } %>
 				</td>
+				<% if (fieldType === 'Final') { %>
 				<td><%= studentDocument.isConfirmed ? 'áno' : 'nie' %></td>
+				<% } %>
 			</tr>
 			<% }); %>
 		</tbody>

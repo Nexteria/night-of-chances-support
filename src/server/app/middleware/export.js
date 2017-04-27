@@ -20,22 +20,26 @@ router.use(expressBasicAuth(
 	config.APP_BASIC_AUTH_PASSWORD,
 ));
 
-router.get('/ws/:ws_id', expressPromise(async (req, res) => {
-	// Retrieve the current workshop id.
-	const currentWorkshopId = req.params.ws_id;
-	const currentStudentWorkshopFinalField = `${currentWorkshopId}Final`;
+router.get('/:google_sheet_id/:field_type/ws/:ws_id', expressPromise(async (req, res) => {
+	// Retrieve the current parameters.
+	const {
+		google_sheet_id: googleSheetId,
+		field_type: fieldType,
+		ws_id: workshopId,
+	} = req.params;
+	const currentStudentWorkshopField = workshopId + fieldType;
 
 	// Load all of the workshop and student documents.
 	const [
 		workshopDocuments,
 		mappedStudentDocuments,
 	] = await Promise.all([
-		colorCrm.loadWorkshopDocuments(),
-		colorCrm.loadStudentDocuments(),
+		colorCrm.loadWorkshopDocuments(googleSheetId),
+		colorCrm.loadStudentDocuments(googleSheetId),
 	]);
 
 	// Verify if the selected workshop id exists.
-	if (!(currentWorkshopId in workshopDocuments)) {
+	if (!(workshopId in workshopDocuments)) {
 		return res.status(httpStatus.BAD_REQUEST).send('Zadane workshop id neexistuje');
 	}
 
@@ -45,12 +49,12 @@ router.get('/ws/:ws_id', expressPromise(async (req, res) => {
 			return mappedStudentDocuments[studentId];
 		})
 		.filter((studentDocument) => {
-			return studentDocument[currentStudentWorkshopFinalField] !== '';
+			return studentDocument[currentStudentWorkshopField] !== '';
 		})
 		.map((studentDocument) => {
 			return {
 				...studentDocument,
-				isConfirmed: studentDocument[currentStudentWorkshopFinalField] === 'P',
+				isConfirmed: studentDocument[currentStudentWorkshopField] === 'P',
 			};
 		});
 
@@ -67,29 +71,34 @@ router.get('/ws/:ws_id', expressPromise(async (req, res) => {
 
 	// Render the response.
 	return res.status(httpStatus.OK).render('export', {
-		title: `Workshop export ${currentWorkshopId}`,
+		title: `${fieldType} Workshop export ${workshopId}`,
 		type: 'Workshop',
-		eventDocument: workshopDocuments[currentWorkshopId],
+		fieldType,
+		eventDocument: workshopDocuments[workshopId],
 		studentDocuments,
 	});
 }));
 
-router.get('/sd/:sd_id', expressPromise(async (req, res) => {
-	// Retrieve the current speed date id.
-	const currentSpeedDateId = req.params.sd_id;
-	const currentStudentSpeedDateFinalField = `${currentSpeedDateId}Final`;
+router.get('/:google_sheet_id/:field_type/sd/:sd_id', expressPromise(async (req, res) => {
+	// Retrieve the current parameters.
+	const {
+		google_sheet_id: googleSheetId,
+		field_type: fieldType,
+		sd_id: speedDateId,
+	} = req.params;
+	const currentStudentSpeedDateField = speedDateId + fieldType;
 
 	// Load all of the speed date and student documents.
 	const [
 		speedDateDocuments,
 		mappedStudentDocuments,
 	] = await Promise.all([
-		colorCrm.loadSpeedDateDocuments(),
-		colorCrm.loadStudentDocuments(),
+		colorCrm.loadSpeedDateDocuments(googleSheetId),
+		colorCrm.loadStudentDocuments(googleSheetId),
 	]);
 
 	// Verify if the selected workshop id exists.
-	if (!(currentSpeedDateId in speedDateDocuments)) {
+	if (!(speedDateId in speedDateDocuments)) {
 		return res.status(httpStatus.BAD_REQUEST).send('Zadane speed date id neexistuje');
 	}
 
@@ -99,12 +108,12 @@ router.get('/sd/:sd_id', expressPromise(async (req, res) => {
 			return mappedStudentDocuments[studentId];
 		})
 		.filter((studentDocument) => {
-			return studentDocument[currentStudentSpeedDateFinalField] !== '';
+			return studentDocument[currentStudentSpeedDateField] !== '';
 		})
 		.map((studentDocument) => {
 			return {
 				...studentDocument,
-				isConfirmed: studentDocument[currentStudentSpeedDateFinalField] === 'P',
+				isConfirmed: studentDocument[currentStudentSpeedDateField] === 'P',
 			};
 		});
 
@@ -121,9 +130,10 @@ router.get('/sd/:sd_id', expressPromise(async (req, res) => {
 
 	// Render the response.
 	return res.status(httpStatus.OK).render('export', {
-		title: `Speed date export ${currentSpeedDateId}`,
+		title: `${fieldType} Speed date export ${speedDateId}`,
 		type: 'Speed date',
-		eventDocument: speedDateDocuments[currentSpeedDateId],
+		fieldType,
+		eventDocument: speedDateDocuments[speedDateId],
 		studentDocuments,
 	});
 }));

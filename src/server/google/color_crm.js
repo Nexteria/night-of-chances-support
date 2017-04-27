@@ -40,9 +40,9 @@ const loadDocuments = async (googleSheetId, googleSheetRange, fields, idField) =
 		}, {});
 };
 
-export const loadWorkshopDocuments = () => {
+export const loadWorkshopDocuments = (googleSheetId) => {
 	return loadDocuments(
-		'1f5_8hDlC7Y81ZRsVPjnIwcBiMPnA3JbD2be3y5ficYE',
+		googleSheetId,
 		"'Workshop-y'!A5:BY100",
 		[
 			'Id', 'Name1', 'Name2', 'Prerequisites',
@@ -53,9 +53,9 @@ export const loadWorkshopDocuments = () => {
 	);
 };
 
-export const loadSpeedDateDocuments = async () => {
+export const loadSpeedDateDocuments = (googleSheetId) => {
 	return loadDocuments(
-		'1f5_8hDlC7Y81ZRsVPjnIwcBiMPnA3JbD2be3y5ficYE',
+		googleSheetId,
 		"'Speed date-y'!A4:O100",
 		[
 			'Id', 'Name1', 'Name2', 'StartTime', 'EndTime',
@@ -65,9 +65,9 @@ export const loadSpeedDateDocuments = async () => {
 	);
 };
 
-export const loadStudentDocuments = async () => {
-	const workshopDocuments = await loadWorkshopDocuments();
-	const speedDateDocuments = await loadSpeedDateDocuments();
+export const loadStudentDocuments = async (googleSheetId) => {
+	const workshopDocuments = await loadWorkshopDocuments(googleSheetId);
+	const speedDateDocuments = await loadSpeedDateDocuments(googleSheetId);
 
 	const fields = [
 		'FirstName', 'LastName', 'Barcode', 'Email', 'OrderDate',
@@ -93,7 +93,7 @@ export const loadStudentDocuments = async () => {
 	});
 
 	return loadDocuments(
-		'1f5_8hDlC7Y81ZRsVPjnIwcBiMPnA3JbD2be3y5ficYE',
+		googleSheetId,
 		"'Studenti'!A8:CT1000",
 		fields, 'Barcode',
 	);

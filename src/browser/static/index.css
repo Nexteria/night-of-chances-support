@@ -1,4 +1,4 @@
-#export body {
+body#export {
 	padding: 1.5em;
 }
 #export h1,
@@ -21,7 +21,7 @@
 	border: thin solid silver;
 }
 
-#confirm_list body {
+body#confirm_list {
 	padding: 1.5em;
 }
 #confirm_list div {
