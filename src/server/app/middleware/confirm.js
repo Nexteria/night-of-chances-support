@@ -150,14 +150,17 @@ router.get('/list/:ws_id', expressPromise(async (req, res) => {
 	});
 }));
 
-router.get('/reset', expressPromise(async (req, res) => {
+router.get('/:google_sheet_id/reset', expressPromise(async (req, res) => {
+	// Retrieve the current parameters.
+	const googleSheetId = req.params.google_sheet_id;
+
 	// Load all the workshop and student documents.
 	const [
 		workshopDocuments,
 		mappedStudentDocuments,
 	] = await Promise.all([
-		colorCrm.loadWorkshopDocuments(),
-		colorCrm.loadStudentDocuments(),
+		colorCrm.loadWorkshopDocuments(googleSheetId),
+		colorCrm.loadStudentDocuments(googleSheetId),
 	]);
 
 	// Determine the workshop assignment fields.
