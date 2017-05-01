@@ -4,13 +4,12 @@ body#export {
 #export h1,
 #export ul {
 	padding: 0;
+	padding-bottom: 0.5em;
 	margin: 0 0.4em;
-	float: left;
 	list-style: none;
 }
 #export div {
-	height: 150px;
-	clear: both;
+	padding-bottom: 1em;
 }
 #export th {
 	background: #333;
