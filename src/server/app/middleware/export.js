@@ -28,6 +28,7 @@ router.get('/:google_sheet_id/:field_type/ws/:ws_id', expressPromise(async (req,
 		ws_id: workshopId,
 	} = req.params;
 	const currentStudentWorkshopField = workshopId + fieldType;
+	const currentStudentWorkshopField2 = workshopId + 'Final';
 
 	// Load all of the workshop and student documents.
 	const [
@@ -49,17 +50,17 @@ router.get('/:google_sheet_id/:field_type/ws/:ws_id', expressPromise(async (req,
 			return mappedStudentDocuments[studentId];
 		})
 		.filter((studentDocument) => {
-			return studentDocument[currentStudentWorkshopField] !== '';
-		})/*
+			return studentDocument[currentStudentWorkshopField] !== undefined
+				&& studentDocument[currentStudentWorkshopField] !== '';
+		})
 		.map((studentDocument) => {
 			return {
 				...studentDocument,
-				isConfirmed: studentDocument[currentStudentWorkshopField] === 'P',
+				isConfirmed: studentDocument[currentStudentWorkshopField2] !== undefined
+					&& studentDocument[currentStudentWorkshopField2] !== '',
 			};
 		});
-		*/
 
-	/*
 	// Sort the student documents according to the is confirmed.
 	studentDocuments.sort((a, b) => {
 		if (a.isConfirmed && !b.isConfirmed) {
@@ -70,7 +71,6 @@ router.get('/:google_sheet_id/:field_type/ws/:ws_id', expressPromise(async (req,
 		}
 		return 0;
 	});
-	*/
 
 	// Render the response.
 	return res.status(httpStatus.OK).render('export', {

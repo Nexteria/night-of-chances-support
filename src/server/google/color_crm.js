@@ -79,6 +79,7 @@ export const loadStudentDocuments = async (googleSheetId) => {
 		fields.push(
 			`${workshopId}Štud`,
 			`${workshopId}Skóre`,
+			`${workshopId}Auto`,
 			`${workshopId}Final`,
 			`${workshopId}Real`,
 		);

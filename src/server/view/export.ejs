@@ -29,10 +29,9 @@
 				<th>Telefón</th>
 				<th>Škola</th>
 				<th>Ročník</th>
-				<th>Prítomný</th>
-				<% /* if (fieldType === 'Final') { %>
 				<th>Potvrdený</th>
-				<% } */ %>
+				<th>CV</th>
+				<% /* %><th>Prítomný</th><% */ %>
 			</tr>
 		</thead>
 		<tbody>
@@ -45,21 +44,19 @@
 				<td><%= studentDocument.NumberScreen %></td>
 				<td><%= studentDocument.SchoolScreen %></td>
 				<td><%= studentDocument.GradeScreen %></td>
-				<td>
-					<% /* if (studentDocument.CVLink !== '') { %>
-					<a href="<%= studentDocument.CVLink %>" target="_blank">odkaz</a>
-					<% } */ %>
-				</td>
-				<% /* if (fieldType === 'Final') { %>
 				<td><%= studentDocument.isConfirmed ? 'áno' : 'nie' %></td>
-				<% } */ %>
+				<td>
+					<% if (studentDocument.CVLink !== '') { %>
+					<a href="<%= studentDocument.CVLink %>" target="_blank">odkaz</a>
+					<% } %>
+				</td>
 			</tr>
 			<% }); %>
-			<% for (var i = 0; i < 10; ++i) { %>
+			<% /* for (var i = 0; i < 10; ++i) { %>
 			<tr>
-				<td><%= i + studentDocuments.length + 1 %></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+				<td><%= i + studentDocuments.length + 1 %></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
 			</tr>
-			<% } %>
+			<% } */ %>
 		</tbody>
 	</table>
 <%- include('_footer.ejs') %>
