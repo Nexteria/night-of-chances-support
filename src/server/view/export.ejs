@@ -3,10 +3,8 @@
 	bodyId: 'export',
 }) %>
 	<div>
-		<h1>
-			Night of Chances Business 2017 Bratislava
-			<img src="/logo.png" alt="Night of Chances logo" height="120" width="150" />
-		</h1>
+		<img src="/logo.png" alt="Night of Chances logo" height="120" width="150" style="float: right; margin-top: 10px; margin-right: 20px" />
+		<h2 style="margin-top: 0">NoC Business 2017 Bratislava</h2>
 		<ul>
 			<li><strong><%= type %></strong>: <%= eventDocument.Name2 %></li>
 			<li><strong>Firma</strong>: <%= eventDocument.Name1 %></li>
@@ -21,7 +19,7 @@
 			<% /* } */ %>
 		</ul>
 	</div>
-	<table>
+	<table style="width: 100%; clear: both">
 		<thead>
 			<tr>
 				<th>#</th>
@@ -31,10 +29,10 @@
 				<th>Telefón</th>
 				<th>Škola</th>
 				<th>Ročník</th>
-				<th class="print-hide">CV</th>
-				<% if (fieldType === 'Final') { %>
+				<th>Prítomný</th>
+				<% /* if (fieldType === 'Final') { %>
 				<th>Potvrdený</th>
-				<% } %>
+				<% } */ %>
 			</tr>
 		</thead>
 		<tbody>
@@ -47,16 +45,21 @@
 				<td><%= studentDocument.NumberScreen %></td>
 				<td><%= studentDocument.SchoolScreen %></td>
 				<td><%= studentDocument.GradeScreen %></td>
-				<td class="print-hide">
-					<% if (studentDocument.CVLink !== '') { %>
+				<td>
+					<% /* if (studentDocument.CVLink !== '') { %>
 					<a href="<%= studentDocument.CVLink %>" target="_blank">odkaz</a>
-					<% } %>
+					<% } */ %>
 				</td>
 				<% /* if (fieldType === 'Final') { %>
 				<td><%= studentDocument.isConfirmed ? 'áno' : 'nie' %></td>
 				<% } */ %>
 			</tr>
 			<% }); %>
+			<% for (var i = 0; i < 10; ++i) { %>
+			<tr>
+				<td><%= i + studentDocuments.length + 1 %></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<% } %>
 		</tbody>
 	</table>
 <%- include('_footer.ejs') %>

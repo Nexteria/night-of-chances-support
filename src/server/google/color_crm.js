@@ -46,7 +46,7 @@ export const loadWorkshopDocuments = (googleSheetId) => {
 		"'Workshop-y'!A1:G100",
 		[
 			'Id', 'Name1', 'Name2', /* 'Prerequisites', */
-			'StartTime', 'EndTime', 'Buddy', /* 'Room', */
+			'StartTime', 'EndTime', 'Buddy', 'Room',
 			'Type', /* 'Prerequisites', 'CapacityMin', 'CapacityMax', */
 		],
 		'Id',
