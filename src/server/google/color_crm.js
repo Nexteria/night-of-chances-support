@@ -43,11 +43,11 @@ const loadDocuments = async (googleSheetId, googleSheetRange, fields, idField) =
 export const loadWorkshopDocuments = (googleSheetId) => {
 	return loadDocuments(
 		googleSheetId,
-		"'Workshop-y'!A5:BY100",
+		"'Workshop-y'!A1:G100",
 		[
-			'Id', 'Name1', 'Name2', 'Prerequisites',
-			'StartTime', 'EndTime', 'Buddy', 'Room',
-			'Type', 'Prerequisites', 'CapacityMin', 'CapacityMax',
+			'Id', 'Name1', 'Name2', /* 'Prerequisites', */
+			'StartTime', 'EndTime', 'Buddy', /* 'Room', */
+			'Type', /* 'Prerequisites', 'CapacityMin', 'CapacityMax', */
 		],
 		'Id',
 	);
@@ -67,13 +67,13 @@ export const loadSpeedDateDocuments = (googleSheetId) => {
 
 export const loadStudentDocuments = async (googleSheetId) => {
 	const workshopDocuments = await loadWorkshopDocuments(googleSheetId);
-	const speedDateDocuments = await loadSpeedDateDocuments(googleSheetId);
+	// const speedDateDocuments = await loadSpeedDateDocuments(googleSheetId);
 
 	const fields = [
-		'FirstName', 'LastName', 'Barcode', 'Email', 'OrderDate',
-		'TicketType', 'CVLink', 'SDMotivation', 'CommentScreen',
-		'Number', 'NumberScreen', 'Rating', 'CVSumar', 'SpeedDateSumar',
-		'School', 'SchoolScreen', 'Grade', 'GradeScreen',
+		'FirstName', 'LastName', /* 'Barcode', */ 'Email', /* 'OrderDate', */
+		/* 'TicketType', */ 'CVLink', /* 'SDMotivation', 'CommentScreen', */
+		/* 'Number', */ 'NumberScreen', /* 'Rating', 'CVSumar', 'SpeedDateSumar', */
+		/* 'School', */ 'SchoolScreen', /* 'Grade', */ 'GradeScreen',
 	];
 	Object.keys(workshopDocuments).forEach((workshopId) => {
 		fields.push(
@@ -83,18 +83,18 @@ export const loadStudentDocuments = async (googleSheetId) => {
 			`${workshopId}Real`,
 		);
 	});
-	Object.keys(speedDateDocuments).forEach((speedDateId) => {
-		fields.push(
-			`${speedDateId}Štud`,
-			`${speedDateId}Skóre`,
-			`${speedDateId}Final`,
-			`${speedDateId}Real`,
-		);
-	});
+	// Object.keys(speedDateDocuments).forEach((speedDateId) => {
+	// 	fields.push(
+	// 		`${speedDateId}Štud`,
+	// 		`${speedDateId}Skóre`,
+	// 		`${speedDateId}Final`,
+	// 		`${speedDateId}Real`,
+	// 	);
+	// });
 
 	return loadDocuments(
 		googleSheetId,
-		"'Studenti'!A8:CT1000",
-		fields, 'Barcode',
+		"'Studenti'!A8:IT1000",
+		fields, 'Email',
 	);
 };

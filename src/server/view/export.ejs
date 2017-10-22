@@ -4,21 +4,21 @@
 }) %>
 	<div>
 		<h1>
-			Night of Chances Biz/Tech 2017 Košice
-			<!--img src="/logo.jpg" alt="Night of Chances logo" height="120" width="150" /-->
+			Night of Chances Business 2017 Bratislava
+			<img src="/logo.png" alt="Night of Chances logo" height="120" width="150" />
 		</h1>
 		<ul>
 			<li><strong><%= type %></strong>: <%= eventDocument.Name2 %></li>
 			<li><strong>Firma</strong>: <%= eventDocument.Name1 %></li>
 			<li><strong>Čas</strong>: <%=
-				eventDocument.StartTime.split(' ')[1]
+				eventDocument.StartTime /* .split(' ')[1] */
 				+ ' - '
-				+ eventDocument.EndTime.split(' ')[1]
+				+ eventDocument.EndTime /* .split(' ')[1] */
 			%></li>
 			<li><strong>Miestnosť</strong>: <%= eventDocument.Room %></li>
-			<% if (type === 'Workshop') { %>
+			<% /* if (type === 'Workshop') { */ %>
 			<li><strong>Buddy</strong>: <%= eventDocument.Buddy %></li>
-			<% } %>
+			<% /* } */ %>
 		</ul>
 	</div>
 	<table>
@@ -52,9 +52,9 @@
 					<a href="<%= studentDocument.CVLink %>" target="_blank">odkaz</a>
 					<% } %>
 				</td>
-				<% if (fieldType === 'Final') { %>
+				<% /* if (fieldType === 'Final') { %>
 				<td><%= studentDocument.isConfirmed ? 'áno' : 'nie' %></td>
-				<% } %>
+				<% } */ %>
 			</tr>
 			<% }); %>
 		</tbody>

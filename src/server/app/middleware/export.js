@@ -50,14 +50,16 @@ router.get('/:google_sheet_id/:field_type/ws/:ws_id', expressPromise(async (req,
 		})
 		.filter((studentDocument) => {
 			return studentDocument[currentStudentWorkshopField] !== '';
-		})
+		})/*
 		.map((studentDocument) => {
 			return {
 				...studentDocument,
 				isConfirmed: studentDocument[currentStudentWorkshopField] === 'P',
 			};
 		});
+		*/
 
+	/*
 	// Sort the student documents according to the is confirmed.
 	studentDocuments.sort((a, b) => {
 		if (a.isConfirmed && !b.isConfirmed) {
@@ -68,6 +70,7 @@ router.get('/:google_sheet_id/:field_type/ws/:ws_id', expressPromise(async (req,
 		}
 		return 0;
 	});
+	*/
 
 	// Render the response.
 	return res.status(httpStatus.OK).render('export', {
