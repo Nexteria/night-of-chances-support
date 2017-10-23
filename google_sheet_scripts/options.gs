@@ -4,35 +4,24 @@ var options = {
     name: 'importRegTable',
     headerRangeName: 'Import_Reg_Headers',
     headerNamesMap: {
-      'Order #': 'OrderId',
       'Order Date': 'OrderDate',
       'First Name': 'FirstName',
       'Last Name': 'LastName',
       'Email': 'Email',
       'Ticket Type': 'TicketType',
       'Barcode #': 'Barcode',
-      'Order Type': 'OrderType',
-      'Máš záujem o workshopy? (pre preradenie je nutné zaslať CV)': 'WorkshopPreferences',
-      'Máš záujem o speed dating? (pre priradenie je nutné zaslať CV)': 'SpeedDatePreferences',
-      'Tel. Cislo': 'Number',
-      'Akú školu navštevuješ?': 'SchoolImport1',
-      'Doplň akú': 'SchoolImport2',
-      'V akom si ročníku?': 'GradeOrig',
-      'a': 'School',
-      'b': 'Grade',
+      'V prípade záujmu o workshopy či speedating odporúčame zadanie tel. čísla (tel. číslo slúži len pre účel efektívnejšej komunikácie ohľadne výberu workshopov či speeddatingu)': 'Number',
+      'Akú školu navštevuješ?': 'School',
+      'V akom si ročníku?': 'Grade',
     },
-    workshopPreferenceValues: {
-      acceptAll: ['Áno, vyberte ma na workshopy, na ktoré najlepšie spĺňam kritériá. (odporúčaná možnosť - najvyššia šanca účasti na workshope)'],
-      rejectAll: ['Nie, nemám záujem o účasť na workshopoch.'],
-      ignorable: ['Áno, chcem si dodatočne vybrať workshopy (dotazník na výber workshopov ti zašleme dodatočne)', 'Áno, mám záujem o účasť na workshopoch (dotazník na výber workshopov ti zašleme dodatočne - po spustení prihlasovania)'],
+    mergeHeaderName: 'Barcode',
+    beforeRemoveAndRenameMutator: function (importTable) {
+      importTable.getRows().forEach(function (rowObject, row) {
+        if (rowObject['Akú školu navštevuješ?'] === 'iné') {
+          rowObject['Akú školu navštevuješ?'] = rowObject['Akú fakultu navštevuješ?'];
+        }
+      });
     },
-    speedDatePreferenceValues: {
-      acceptAll: [],
-      rejectAll: ['Nie, nemám záujem'],
-      ignorable: ['Áno (dotazník na výber workshopov a speedatingu ti zašleme dodatočne)'],
-    },
-    multiValueDelimiter: ' | ',
-    mergeHeaderName: 'OrderId',
     beforeMergeMutator: function (importTable) {
       importTable.getRows().forEach(function (rowObject, row) {
         const dateTimeArr = rowObject.OrderDate.split(' ').map(function (dateTimePart) {
@@ -44,28 +33,20 @@ var options = {
           dateTimeArr[0][2], dateTimeArr[0][1] - 1, dateTimeArr[0][0],
           dateTimeArr[1][0], dateTimeArr[1][1], dateTimeArr[1][2], 0);
 
-        if (rowObject.TicketType === 'Stanky') {
-          rowObject.Grade = '';
-        }
-        switch (rowObject.GradeOrig) {
-          case 1:
-          case '1':
+        switch (rowObject.Grade) {
+          case '1.':
             rowObject.Grade = '1 Bc';
             break;
-          case 2:
-          case '2':
+          case '2.':
             rowObject.Grade = '2 Bc';
             break;
-          case 3:
-          case '3':
+          case '3.':
             rowObject.Grade = '3+ Bc';
             break;
-          case 4:
-          case '4':
+          case '4.':
             rowObject.Grade = '1 Ing';
             break;
-          case 5:
-          case '5':
+          case '5.':
             rowObject.Grade = '2+ Ing';
             break;
           case 'čerstvý absolvent':
@@ -76,12 +57,6 @@ var options = {
             break;
         }
 
-        // TODO: Fix
-
-        rowObject.School = !(rowObject.SchoolImport1)
-          ? rowObject.SchoolImport2
-          : rowObject.SchoolImport1;
-
         rowObject.Email = rowObject.Email.toLowerCase();
 
         importTable.setRow(row, rowObject);
@@ -91,23 +66,50 @@ var options = {
     name: 'importPrefTable',
     headerRangeName: 'Import_Pref_Headers',
     headerNamesMap: {
-      'Submission Date': 'SubmissionDate',
       'Email': 'Email',
-      'Na ktoré workshopy sa chceš prihlásit?': 'WorkshopPreferences',
-      'Máš záujem o speed dating?': 'SpeedDatePreferences',
-      'Motivačný text k speed datingu': 'SDMotivation',
+      'Workshop Ids': 'WorkshopPreferences',
+      'Speed date Ids': 'SpeedDatePreferences',
+      'Aká je tvoja motivácia pre stretnutie so speed daterom?': 'SDMotivation',
       'Tvoje CV': 'CVLink',
-      'Priestor na tvoj komentár': 'Comment',
-      'IP': 'IPAddress',
-      'Submission ID': 'SubmissionID',
+      'Telefon': 'NumberScreen',
+      'Speed dating': 'SpeedDateSumar',
+      'CV summary': 'CVSumar',
+      'Rating': 'Rating',
+      'NLA': 'InviteToNLA',
+      'Skola': 'SchoolScreen',
+      'Rocnik': 'GradeScreen',
+      'Anglictina': 'SK01',
+      'Nemcina': 'SK02',
+      'CAD': 'SK03',
+      'CAM': 'SK04',
+      'CATIA': 'SK05',
+      'Delphi': 'SK06',
+      'DSS  Solid': 'SK07',
+      'PowerMill': 'SK08',
+      'PowerShape': 'SK09',
+      'MS Project': 'SK10',
+      'Matlab': 'SK11',
+      'EdgeCam / Partmodeler': 'SK12',
+      'Simuling': 'SK13',
+      'Automatizace': 'SK14',
+      'C/C++': 'SK15',
+      'Python': 'SK16',
+      'Adams': 'SK17',
+      'SAP': 'SK18',
+      'PHP': 'SK19',
+      'Technicke kresleni / tvorba / dokumentace': 'SK20',
+      'PLC Siemens': 'SK21',
+      'CNC Stroje': 'SK22',
+      'Mat.Wolfram': 'SK23',
+      'Autodesk Revit': 'SK24',
     },
     workshopPreferenceValues: {
-      acceptAll: ['WS_ANY'],
+      acceptAll: ['WS_YF', 'WS_FRE', 'WS_PO'],
       rejectAll: [],
-      ignorable: ['WS_TB'],
+      ignorable: [],
     },
     speedDatePreferenceValues: {
-      acceptAll: [],
+      acceptAll: ['SD_ANY'],
       rejectAll: [],
       ignorable: [],
     },
@@ -117,52 +119,9 @@ var options = {
       importTable.getRows().forEach(function (rowObject, row) {
         rowObject.Email = rowObject.Email.toLowerCase();
         rowObject.SDMotivation = rowObject.SDMotivation.replace(/\n/g, ' ');
-        rowObject.Comment = rowObject.Comment.replace(/\n/g, ' ');
-        importTable.setRow(row, rowObject);
-      });
-    },
-  }, {
-    name: 'importScreenTable',
-    headerRangeName: 'Import_Screen_Headers',
-    headerNamesMap: {
-      'Email': 'Email',
-      'CV SUMAR': 'CVSumar',
-      'Rating': 'Rating',
-      'Ročník': 'GradeScreen',
-      'IT odbory': 'SK01',
-      'Telekomunikácie': 'SK02',
-      'Matfyz': 'SK03',
-      'Biznis IT managment': 'SK04',
-      'NJ': 'SK05',
-      'AJ': 'SK06',
-      'Android': 'SK07',
-      'iOS': 'SK08',
-      'Linux': 'SK09',
-      'TCP/IP': 'SK10',
-      'Python': 'SK11',
-      'Perl/PHP': 'SK12',
-      'JS/JavaScript': 'SK13',
-      'C#': 'SK14',
-      'C/C++': 'SK15',
-      'Java': 'SK16',
-      'Cisco': 'SK17',
-      'SQL': 'SK18',
-      'HTML/CSS': 'SK19',
-      'SWIFT': 'SK20',
-      'Docker': 'SK21',
-      'Agile': 'SK22',
-      'JIRA': 'SK23',
-      'Big Data': 'SK24',
-      'Umela inteligenicia': 'SK25',
-      'Oracle': 'SK26',
-      'Testing': 'SK27',
-      'Databaze': 'SK28',
-      'Git/GIT Hub': 'SK29',
-      'Poznamka': 'CommentScreen',
-    },
-    mergeHeaderName: 'Email',
-    beforeMergeMutator: function (importTable) {
-      importTable.getRows().forEach(function (rowObject, row) {
+        rowObject.SpeedDateSumar = rowObject.SpeedDateSumar.replace(/\n/g, ' ');
+        rowObject.CVSumar = rowObject.CVSumar.replace(/\n/g, ' ');
+
         rowObject.Rating = rowObject.Rating.trim();
         switch (rowObject.Rating) {
           case 'B-/C':
@@ -189,47 +148,31 @@ var options = {
           case 'D/nezaraditelny':
             rowObject.Rating = 'D';
             break;
+          case 'nezaraditelny':
+            rowObject.Rating = '';
+            break;
         }
 
-        const booleanSkills = ['SK01', 'SK02', 'SK03', 'SK04'];
-        booleanSkills.forEach(function (skillName) {
-          rowObject[skillName] = (rowObject[skillName] === 'ano') ? '1' : '';
-        });
+        rowObject.InviteToNLA = (rowObject.InviteToNLA === 'ano')
+          ? 1
+          : 0;
 
         const numericSkills = [
-          'SK05', 'SK06', 'SK07', 'SK08', 'SK09',
-          'SK10', 'SK11', 'SK12', 'SK13', 'SK14',
+          'SK01', 'SK02', 'SK03', 'SK04', 'SK05',
+          'SK06', 'SK07', 'SK08', 'SK09', 'SK10',
+          'SK11', 'SK12', 'SK13', 'SK14', 'SK15',
           'SK15', 'SK16', 'SK17', 'SK18', 'SK19',
           'SK20', 'SK21', 'SK22', 'SK23', 'SK24',
-          'SK25', 'SK26', 'SK27', 'SK28', 'SK29'
         ];
         numericSkills.forEach(function (skillName) {
           switch (rowObject[skillName]) {
             case 'expert':
               rowObject[skillName] = '3';
               break;
-            case 'pokrociky':
-              rowObject[skillName] = '2';
-              break;
             case 'pokrocily':
               rowObject[skillName] = '2';
               break;
-            case 'pokrocily (5)':
-              rowObject[skillName] = '2';
-              break;
-            case 'pokrocily (server)':
-              rowObject[skillName] = '2';
-              break;
-            case 'scrum-zacatecnik':
-              rowObject[skillName] = '1';
-              break;
-            case 'zacatecik':
-              rowObject[skillName] = '1';
-              break;
             case 'zacatecnik':
-              rowObject[skillName] = '1';
-              break;
-            case 'zacatenik':
               rowObject[skillName] = '1';
               break;
           }
@@ -244,15 +187,14 @@ var options = {
   },
   studentTable: {
     headerNames: [
-      'FirstName', 'LastName', 'OrderId', 'Barcode', 'Email', 'OrderDate', 'TicketType', 'OrderType',
-      'SubmissionDate', 'CVLink', 'CVSumar', 'SDMotivation', 'CommentScreen', 'Comment', 'IPAddress',
-      'Number', 'Rating', 'SchoolImport1', 'SchoolImport1', 'School', 'GradeOrig', 'GradeScreen', 'Grade'
+      'FirstName', 'LastName', 'Barcode', 'Email', 'OrderDate', 'TicketType',
+      'CVLink', 'SDMotivation', 'CommentScreen', 'Number', 'NumberScreen',
+      'Rating', 'CVSumar', 'SpeedDateSumar', 'School', 'SchoolScreen',
+      'Grade', 'GradeScreen', 'InviteToNLA',
     ],
     assignHeaderNames: {
       stud: 'Štud',
-      client: 'Klient',
       score: 'Skóre',
-      auto: 'Auto',
       final: 'Final',
       real: 'Real',
     },
@@ -260,14 +202,6 @@ var options = {
       rejected: 0,
       available: 0.5,
       interested: 1,
-      agnostic: '',
-    },
-    autoAssignValues: {
-      rejected: 0,
-      reserved: 0.5,
-      accepted: 1,
-      preAccepted: 'P',
-      preRejected: 'Z',
       agnostic: '',
     },
     finalAssignValues: {
@@ -278,11 +212,10 @@ var options = {
       preRejected: 'Z',
       agnostic: '',
     },
-    autoReservedAssignmentCapacityCoeficient: 0.5,
   },
   workshopTable: {
     headerNames: [
-      'Id', 'Name1', 'Name2', 'StartTime', 'EndTime', 'Room', 'Type', 'CapacityMin', 'CapacityMax'
+      'Id', 'Name1', 'Name2', 'StartTime', 'EndTime', 'Buddy', 'Room', 'Type', 'CapacityMin', 'CapacityMax'
     ],
   },
   speedDateTable: {

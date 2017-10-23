@@ -21,10 +21,6 @@ function onOpen() {
     spreadsheet.addMenu('Night of Chances - Automatizácia', [
       // Add import new students menu item.
       { name: 'Importovať nových študentov', functionName: 'menuItemImportNewStudents_' },
-      /*
-      // Add assign students menu item.
-      { name: 'Priradiť študentov na workshop-y a speed date-y', functionName: 'menutItemAssignStudents_' },
-      */
       // Add export data menu item.
       { name: 'Exportovať dáta pre registračnú apku', functionName: 'menutItemExportForApp_' },
     ]);

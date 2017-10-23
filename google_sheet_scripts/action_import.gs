@@ -53,7 +53,6 @@ var runImportAction = function () {
   });
   const originalCellCount = studentTable.countRows();
 
-  // TODO: Add check for WS and SD ids.
 
   // Create alias names map for workshop and speed date ids.
   const aliasNameToIdMap = aliasTable.mapRows('Name', 'Id');
