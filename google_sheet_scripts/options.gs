@@ -71,6 +71,7 @@ var options = {
       'Speed date Ids': 'SpeedDatePreferences',
       'Aká je tvoja motivácia pre stretnutie so speed daterom?': 'SDMotivation',
       'Tvoje CV': 'CVLink',
+      /*
       'Telefon': 'NumberScreen',
       'Speed dating': 'SpeedDateSumar',
       'CV summary': 'CVSumar',
@@ -102,26 +103,27 @@ var options = {
       'CNC Stroje': 'SK22',
       'Mat.Wolfram': 'SK23',
       'Autodesk Revit': 'SK24',
+      */
     },
     workshopPreferenceValues: {
-      acceptAll: ['WS_YF', 'WS_FRE', 'WS_PO'],
+      acceptAll: [],
       rejectAll: [],
       ignorable: [],
     },
     speedDatePreferenceValues: {
-      acceptAll: ['SD_ANY'],
+      acceptAll: [],
       rejectAll: [],
       ignorable: [],
     },
-    multiValueDelimiter: ',',
+    multiValueDelimiter: '\n',
     mergeHeaderName: 'Email',
     beforeMergeMutator: function (importTable) {
       importTable.getRows().forEach(function (rowObject, row) {
         rowObject.Email = rowObject.Email.toLowerCase();
         rowObject.SDMotivation = rowObject.SDMotivation.replace(/\n/g, ' ');
-        rowObject.SpeedDateSumar = rowObject.SpeedDateSumar.replace(/\n/g, ' ');
-        rowObject.CVSumar = rowObject.CVSumar.replace(/\n/g, ' ');
-
+        // rowObject.SpeedDateSumar = rowObject.SpeedDateSumar.replace(/\n/g, ' ');
+        // rowObject.CVSumar = rowObject.CVSumar.replace(/\n/g, ' ');
+        /*
         rowObject.Rating = rowObject.Rating.trim();
         switch (rowObject.Rating) {
           case 'B-/C':
@@ -177,7 +179,7 @@ var options = {
               break;
           }
         });
-
+        */
         importTable.setRow(row, rowObject);
       });
     },
