@@ -1,3 +1,4 @@
+/*
 var Assign = {};
 
 (function () {
@@ -230,3 +231,4 @@ var Assign = {};
     }
   };
 })();
+*/
