@@ -20,6 +20,16 @@ function menuItemCheckDataConsistency_() {
   }
 }
 
+function menuItemImportNewStudentsNoOverwrite_() {
+  Data.overwriteEnabled = false;
+  menuItemImportNewStudents_();
+}
+
+function menuItemImportNewStudentsOverwrite_() {
+  Data.overwriteEnabled = true;
+  menuItemImportNewStudents_();
+}
+
 function menuItemImportNewStudents_() {
   var hasErrorOccured = false;
 
@@ -256,6 +266,10 @@ function menutItemAssignStudents_() {
     var workshopReserveDataRangeValues = {};
     var workshopCandidateStudentRows = {};
 
+    // Initialize workshop time period to ids map and speed date ids.
+    var workshopTimePeriodToIds = Assign.createWorkshopTimePeriodToIdsMap(workshopsTable);
+    var speedDateIds = Utility.Object.keys(studentSpeedDateAutoDataRangeValues);
+
     for (var workshopId in studentWorkshopAutoDataRanges) {
       // Initialize workshop specific variables.
       var workshopRow = workshopIdToRow[workshopId];
@@ -309,9 +323,6 @@ function menutItemAssignStudents_() {
       speedDateReserveDataRangeValues[speedDateRow] = [ speedDateReserveValue ];
     }
 
-    // Initialize workshop time period to ids map.
-    var workshopTimePeriodToIds = Assign.createWorkshopTimePeriodToIdsMap(workshopsTable);
-
     for (var workshopTimePeriod in workshopTimePeriodToIds) {
       // Randomly shuffle workshop ids for the current time period.
       var timePeriodWorkshopIds = Utility.Array.shuffle(workshopTimePeriodToIds[workshopTimePeriod]);
@@ -328,7 +339,7 @@ function menutItemAssignStudents_() {
     }
 
     // Randomly shuffle speed date ids for the current time period.
-    var timePeriodSpeedDateIds = Utility.Array.shuffle(Utility.Object.keys(studentSpeedDateAutoDataRangeValues));
+    var timePeriodSpeedDateIds = Utility.Array.shuffle(speedDateIds);
 
     // Determine candidate student workshop assignements for fullfilling capacities.
     Assign.determineCandidateStudentAssignments(timePeriodSpeedDateIds, speedDateIdToRow,
@@ -355,6 +366,56 @@ function menutItemAssignStudents_() {
   }
 }
 
+function menutItemExportForApp_() {
+  var hasErrorOccured = false;
+
+  try {
+    // Load tables.
+    var workshopsTable = Table.loadWorkshops();
+    var speedDatesTable = Table.loadSpeedDates();
+    var eventsTable = Table.loadEvents();
+    var studentsTable = Table.loadStudents();
+
+    // Check if any student exists.
+    if (studentsTable.rowCount === 0) {
+      throw Utility.Error.create("Neboli nájdené žiadne študentské záznamy");
+    }
+
+    // Load workshop and speed date events.
+    var workshopEvents = Export.getWorkshops(workshopsTable);
+    var speedDateEvents = Export.getSpeedDates(speedDatesTable);
+
+    // Collect all events.
+    var events = Export.getEvents(eventsTable);
+    for (var workshopKey in workshopEvents) {
+      events[workshopKey] = workshopEvents[workshopKey];
+    }
+    for (var speedDateKey in speedDateEvents) {
+      events[speedDateKey] = speedDateEvents[speedDateKey];
+    }
+
+    // Create export object.
+    var exportObject = {
+      "attendees": Export.getAttendees(studentsTable, workshopEvents, speedDateEvents),
+      "events": events
+    };
+  } catch (error) {
+    Utility.Error.log(error);
+    hasErrorOccured = true;
+  }
+  Utility.clearAll();
+
+  if (!hasErrorOccured) {
+    var htmlString = '<p>Nasleduje výstup:</p>'
+      + '<pre style="background: #ddd; padding: 5px;">' + JSON.stringify(exportObject, null, 2) + '</pre>';
+    var htmlOutput = HtmlService.createHtmlOutput(htmlString)
+      .setWidth(1000)
+      .setHeight(600);
+
+    SpreadsheetApp.getUi().showModalDialog(htmlOutput, "Operácia uspela");
+  }
+}
+
 function onOpen()
 {
   // Add menu items for custom functions.
@@ -364,11 +425,15 @@ function onOpen()
       // Add check data consistency menu item.
       { name: 'Overiť konsistentnosť dát', functionName: 'menuItemCheckDataConsistency_' },
       // Add import new students menu item.
-      { name: 'Importovať nových študentov', functionName: 'menuItemImportNewStudents_' },
+      { name: 'Importovať nových študentov (bez prepísania)', functionName: 'menuItemImportNewStudentsNoOverwrite_' },
+      // Add import new students menu item.
+      { name: 'Importovať nových študentov (s prepísaním)', functionName: 'menuItemImportNewStudentsOverwrite_' },
       // Add compute student scores menu item.
       { name: 'Spočítať ohodnotenia študentov', functionName: 'menuItemComputeStudentScores_' },
       // Add assign students menu item.
-      { name: 'Priradiť študentov na workshop-y a speed date-y', functionName: 'menutItemAssignStudents_' }
+      { name: 'Priradiť študentov na workshop-y a speed date-y', functionName: 'menutItemAssignStudents_' },
+      // Add export data menu item.
+      { name: 'Exportovať študentov, workshop-y a speed date-y pre apku', functionName: 'menutItemExportForApp_' }
     ]);
   }
 }

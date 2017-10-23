@@ -71,7 +71,9 @@ Utility.Object.keys = function (object) {
   var keyArray = [];
 
   for (var key in object) {
-    keyArray.push(key);
+    if (object.hasOwnProperty(key)) {
+      keyArray.push(key);
+    }
   }
 
   return keyArray;
@@ -83,9 +85,7 @@ Utility.Error = {};
 
 Utility.Error.create = function (message) {
   var error = new Error(message);
-
   error.isCustom = true;
-
   return error;
 };
 
@@ -118,15 +118,24 @@ Utility.Spreadsheet = {};
 
   Utility.Spreadsheet.clear();
 
-  // Methods SubSection.
-
-  Utility.Spreadsheet.getRangeByName = function (name) {
+  function _loadActiveSpreadsheet() {
     if (_activeSpreadsheet === undefined) {
       _activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
     }
     if (_activeSpreadsheet === null) {
       throw new Error("Unable to access the active spreadsheet.");
     }
+  }
+
+  // Methods SubSection.
+
+  Utility.Spreadsheet.getInstance = function () {
+    _loadActiveSpreadsheet();
+    return _activeSpreadsheet;
+  }
+
+  Utility.Spreadsheet.getRangeByName = function (name) {
+    _loadActiveSpreadsheet();
 
     var range = _activeSpreadsheet.getRangeByName(name);
     if (range === null) {
@@ -137,12 +146,7 @@ Utility.Spreadsheet = {};
   };
 
   Utility.Spreadsheet.getSheetByName = function (name) {
-    if (_activeSpreadsheet === undefined) {
-      _activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-    }
-    if (_activeSpreadsheet === null) {
-      throw new Error("Unable to access the active spreadsheet.");
-    }
+    _loadActiveSpreadsheet();
 
     if (!(name in Data.sheetNames)) {
       throw new Error("No sheet is identified under the name '" + name + "'");

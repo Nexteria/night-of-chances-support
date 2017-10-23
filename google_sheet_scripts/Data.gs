@@ -9,7 +9,8 @@ var Data = {};
     students: "Študenti",
     listOfValues: "List of Values",
     workshops: "Workshop-y",
-    speedDates: "Speed date-y"
+    speedDates: "Speed date-y",
+    events: "Event-y"
   };
 
   Data.tableHeaderNames = {
@@ -19,36 +20,46 @@ var Data = {};
         FirstName: "First Name",
         LastName: "Last Name",
         Email: "Email",
-        OrderType: "Order Type"
+        OrderDate: "Order Date",
+        OrderType: "Order Type",
+        Barcode: "Barcode #",
+        TicketType: "Ticket Type",
+        School1: "Kde studuješ?",
+        School2: "název školy a fakulty",
+        Grade1: "Ročník studia"
       },
       preference: {
-        workshop: "Máš záujem prihlásiť sa na workshopy?",
-        speedDate: "Máš záujem prihlásiť sa na speed dating - 10 minútový rozhovor s TOP manažérom?"
+        workshop: "Máš zájem přihlásit se na workshopy?",
+        speedDate: "Máš zájem přihlásit se na speed dating - 10 minutový rozhovor s TOP manažerem?"
       },
       speedDateNote: {
-        SD01: "Napíš nám svoju motiváciu k stretnutiu s Tomášom Volekom",
-        SD02: "Napíš nám svoju motiváciu k stretnutiu s Marošom Cuchtom",
-        SD03: "Napíš nám svoju motiváciu k stretnutiu s Michalom Štenclom",
-        SD04: "Napíš nám svoju motiváciu k stretnutiu s Vladimírom Matoušom.",
-        SD05: "Napíš nám svoju motiváciu k stretnutiu s Pavlom Lukom"
+        SD01: "Napiš nám svou motivaci k setkání s Michalem Štenclem",
+        SD02: "Napiš nám svou motivaci k setkání s Palem Lukov",
+        SD03: "Napiš nám svou motivaci k setkání s Petrem Hofmanem",
+        SD04: "Napiš nám svou motivaci k setkání s Vladimírem Matoušem"
       }
     },
     students: {
       base: [
-        "Id", "FirstName", "LastName", "Email", "OrderType"
+        "Id", "FirstName", "LastName", "Email", "OrderDate", "OrderType", "Barcode", "TicketType", "School1", "School2", "Grade1"
       ],
       other: [
-        "Rating", "Grade"
+        "Number", "Rating", "Grade", "School3"
       ]
     },
     workshops: {
       base: [
-        "Id", "TimePeriod", "Name1", "Name2", "Aliases", "Capacity"
+        "Id", "TimePeriod", "Name1", "Name2", "Aliases", "StartTime", "EndTime", "Room", "Type", "MinCapacity", "Capacity"
       ]
     },
     speedDates: {
       base: [
-        "Id", "Name1", "Name2", "Aliases", "Capacity"
+        "Id", "Name1", "Name2", "Aliases", "StartTime", "EndTime", "Room", "Type", "Capacity"
+      ]
+    },
+    events: {
+      base: [
+        "Id", "Name", "StartTime", "EndTime", "Room", "Type"
       ]
     },
     ratings: {
@@ -68,12 +79,16 @@ var Data = {};
   };
 
   Data.workshopAlias = {
-    no: "Nie, ďakujem.",
-    any: "Áno, prihláste ma na workshopy kde najlepšie spĺňam kritéria."
+    no: "Ne, děkuji.",
+    no1: "vybrat později",
+    no2: "Ne děkuji.",
+    any: "Ano, přihlaste mě na workshopy, kde nejlépe splňuji kritéria.",
+    any1: "Přihlaste mě na workshopy, kde nejlépe splňuji kritéria."
   };
 
   Data.speedDateAlias = {
-    no: "Nie ďakujem."
+    no: "Ne děkuji.",
+    no1: "Ne, děkuji."
   };
 
   Data.preferenceValues = {
@@ -85,7 +100,10 @@ var Data = {};
   };
 
   Data.initialWorkshopsGradeRow = 2;
-  Data.maxWorkshopsSkillId = 17;
+  Data.maxWorkshopsSkillId = 18;
+  Data.defaultSpeedDateMinCapacity = "2";
 
   Data.reserveToCapacityCoeficient = 0.5;
+
+  Data.overwriteEnabled = true;
 })();

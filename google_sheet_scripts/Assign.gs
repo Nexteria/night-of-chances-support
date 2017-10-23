@@ -207,17 +207,25 @@ var Assign = {};
 
         var candidateStudentRow = currentCandidateStudentRows[0];
 
+        var isPreAcceptedCandidate = false;
         for (var j = 0; j < ids.length; ++j) {
-          var otherCandidateStudentRows = candidateStudentRows[ids[j]];
+          var otherId = ids[j];
+          var otherCandidateStudentRows = candidateStudentRows[otherId];
           var candidateStudentRowIndex = otherCandidateStudentRows.indexOf(candidateStudentRow);
 
           if (candidateStudentRowIndex !== -1) {
             otherCandidateStudentRows.splice(candidateStudentRowIndex, 1);
           }
+
+          if (autoDataRangeValues[otherId][candidateStudentRow][0] === Data.preferenceValues.preAccepted) {
+            isPreAcceptedCandidate = true;
+          }
         }
 
-        autoDataRangeValues[id][candidateStudentRow][0] = value;
-        --capacityDataRangeValue[0];
+        if (!isPreAcceptedCandidate) {
+          autoDataRangeValues[id][candidateStudentRow][0] = value;
+          --capacityDataRangeValue[0];
+        }
       }
     }
   };

@@ -125,8 +125,8 @@ var Import = {};
     for (var i = 0; i < workshopPreferenceAliases.length; ++i) {
       var currentAlias = workshopPreferenceAliases[i];
 
-      if ((currentAlias.length > 0) && (currentAlias !== Data.workshopAlias.no)) {
-        if (currentAlias === Data.workshopAlias.any) {
+      if ((currentAlias.length > 0) && (currentAlias !== Data.workshopAlias.no2) && (currentAlias !== Data.workshopAlias.no1) && (currentAlias !== Data.workshopAlias.no)) {
+        if ((currentAlias === Data.workshopAlias.any) || (currentAlias === Data.workshopAlias.any1)) {
           // If the any workshop alias value is encountered.
 
           // Set all unset preferences to the reserved constant.
@@ -167,7 +167,7 @@ var Import = {};
     for (var i = 0; i < speedDatePreferenceAliases.length; ++i) {
       var currentAlias = speedDatePreferenceAliases[i];
 
-      if ((currentAlias.length > 0) && (currentAlias !== Data.speedDateAlias.no)) {
+      if ((currentAlias.length > 0) && (currentAlias !== Data.speedDateAlias.no) && (currentAlias !== Data.speedDateAlias.no1)) {
         if (currentAlias in speedDateAliasToId) {
           // If the current alias is found within the alias to id map.
 
@@ -215,22 +215,35 @@ var Import = {};
 
   Import.mergeRowWithExistitngStudentValues = function (dataRangeValues, row, extractedData) {
     for (var baseKey in dataRangeValues.base) {
-      dataRangeValues.base[baseKey][row][0] = extractedData.base[baseKey];
+      if ((extractedData.base[baseKey] !== '')
+          && (Data.overwriteEnabled || (dataRangeValues.base[baseKey][row][0] === '')))
+      {
+        dataRangeValues.base[baseKey][row][0] = extractedData.base[baseKey];
+      }
     }
     for (var workshopKey in dataRangeValues.workshop) {
       var workshopPreferenceDataRangeValues = dataRangeValues.workshop[workshopKey];
-      if (workshopPreferenceDataRangeValues[row][0] !== Data.preferenceValues.rejected) {
+      if ((extractedData.workshop[workshopKey] !== '')
+          && Data.overwriteEnabled || (workshopPreferenceDataRangeValues[row][0] === ''))
+      {
         workshopPreferenceDataRangeValues[row][0] = extractedData.workshop[workshopKey];
       }
     }
     for (var speedDateKey in dataRangeValues.speedDate) {
       var speedDatePreferenceDataRangeValues = dataRangeValues.speedDate[speedDateKey];
-      if (speedDatePreferenceDataRangeValues[row][0] !== Data.preferenceValues.rejected) {
+      if ((extractedData.speedDate[speedDateKey] !== '')
+          && Data.overwriteEnabled || (speedDatePreferenceDataRangeValues[row][0] === ''))
+      {
         speedDatePreferenceDataRangeValues[row][0] = extractedData.speedDate[speedDateKey];
       }
     }
     for (var speedDateNoteKey in dataRangeValues.speedDateNote) {
-      dataRangeValues.speedDateNote[speedDateNoteKey][row][0] = extractedData.speedDateNote[speedDateNoteKey];
+      var speedDateNoteDataRangeNotes = dataRangeValues.speedDateNote[speedDateNoteKey];
+      if ((extractedData.speedDateNote[speedDateNoteKey] !== '')
+          && Data.overwriteEnabled || (speedDateNoteDataRangeNotes[row][0] === ''))
+      {
+        speedDateNoteDataRangeNotes[row][0] = extractedData.speedDateNote[speedDateNoteKey];
+      }
     }
   };
 

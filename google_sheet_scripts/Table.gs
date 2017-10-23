@@ -365,6 +365,38 @@ var Table = {};
     return _cache[name];
   };
 
+  Table.loadEvents = function () {
+    var name = "events";
+    var headersRangeName = "EV_Headers";
+
+    if (!(name in _cache)) {
+      // Initialize table headers range and header names.
+      var tableHeadersRange = Utility.Spreadsheet.getRangeByName(headersRangeName);
+      var tableHeaderNames = Data.tableHeaderNames[name];
+
+      // Load base header ranges.
+      var baseHeaderRanges = _getHeaderRanges(tableHeadersRange, tableHeaderNames.base);
+
+      // Load table row count.
+      var tableRowCount = _getTableRowCount(baseHeaderRanges.Id);
+
+      // Cache result.
+      _cache[name] = {
+        headerRanges: {
+          base: baseHeaderRanges
+        },
+        dataRanges: {
+          base: _getDataRanges(baseHeaderRanges, tableRowCount)
+        },
+        sheet: Utility.Spreadsheet.getSheetByName(name),
+        headersRange: tableHeadersRange,
+        rowCount: tableRowCount
+      };
+    }
+
+    return _cache[name];
+  };
+
   Table.loadRatings = function () {
     var name = "ratings";
     var headersRangeName = "Rating_Headers";
