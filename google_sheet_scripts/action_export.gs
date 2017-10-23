@@ -5,8 +5,8 @@ function testExport() {
 var runExportAction = (function () {
   return function () {
     // Initialize constants.
-    const autoAssignHeaderName = options.studentTable.assignHeaderNames.auto;
-    const autoAssignValues = options.studentTable.autoAssignValues;
+    const finalAssignHeaderName = options.studentTable.assignHeaderNames.final;
+    const finalAssignValues = options.studentTable.finalAssignValues;
 
     // Load data tables.
     const workshopsTable = new Table('Workshop_Headers');
@@ -59,7 +59,7 @@ var runExportAction = (function () {
         'Barcode', 'OrderDate', 'Email', 'FirstName', 'LastName',
         'Number', 'School', 'Grade', 'TicketType', 'InviteToNLA'
       ].concat(Object.keys(events).map(function (eventId) {
-        return eventId + autoAssignHeaderName;
+        return eventId + finalAssignHeaderName;
       })),
     });
 
@@ -95,13 +95,14 @@ var runExportAction = (function () {
 
       // Set event cross referecing.
       Object.keys(events).forEach(function (eventId) {
-        switch (rowObject[eventId + autoAssignHeaderName]) {
-          case autoAssignValues.preAccepted:
+        switch (rowObject[eventId + finalAssignHeaderName]) {
+          case finalAssignValues.preAccepted:
+          case finalAssignValues.accepted:
             attendee.events[eventId] = '';
             events[eventId].attendees[id] = '';
             ++events[eventId].preselected_attendees_count;
             break;
-          case autoAssignValues.reserved:
+          case finalAssignValues.reserved:
             attendee.standin_events[eventId] = '';
             events[eventId].standin_attendees[id] = '';
             break;

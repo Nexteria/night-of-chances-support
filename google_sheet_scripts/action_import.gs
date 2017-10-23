@@ -127,29 +127,37 @@ var runImportAction = function () {
       };
     }
 
-    importTable.getRows().forEach(function (rowObject, row) {
-      try {
-        rowObject.WorkshopPreferences.split(importTableOptions.multiValueDelimiter).forEach(
-          _generateAddPreferencesCallback(importTableOptions.workshopPreferenceValues, rowObject, workshopIds));
-      } catch (err) {
-        err.message = 'V tabulke "' + importTable.getSheet().getName() + '" sa našla neznáma hodnota pod'
-        + ' záujemu o Workshop-y v riadku ' + (row + importTable.getHeadersRange().getLastRow()) + '\\n'
-        + err.message;
-        throw err;
-      }
+    if (importTable.existsHeader('WorkshopPreferences')) {
+      importTable.getRows().forEach(function (rowObject, row) {
+        try {
+          rowObject.WorkshopPreferences.split(importTableOptions.multiValueDelimiter).forEach(
+            _generateAddPreferencesCallback(importTableOptions.workshopPreferenceValues, rowObject, workshopIds));
+        } catch (err) {
+          err.message = 'V tabulke "' + importTable.getSheet().getName() + '" sa našla neznáma hodnota pod'
+          + ' záujemu o Workshop-y v riadku ' + (row + importTable.getHeadersRange().getLastRow()) + '\\n'
+          + err.message;
+          throw err;
+        }
 
-      try {
-        rowObject.SpeedDatePreferences.split(importTableOptions.multiValueDelimiter).forEach(
-          _generateAddPreferencesCallback(importTableOptions.speedDatePreferenceValues, rowObject, speedDateIds));
-      } catch (err) {
-        err.message = 'V tabulke "' + importTable.getSheet().getName() + '" sa našla neznáma hodnota pod'
-        + ' záujemu o Speed Date-y v riadku ' + (row + importTable.getHeadersRange().getLastRow()) + '\\n'
-        + err.message;
-        throw err;
-      }
+        importTable.setRow(row, rowObject);
+      });
+    }
 
-      importTable.setRow(row, rowObject);
-    });
+    if (importTable.existsHeader('SpeedDatePreferences')) {
+      importTable.getRows().forEach(function (rowObject, row) {
+        try {
+          rowObject.SpeedDatePreferences.split(importTableOptions.multiValueDelimiter).forEach(
+            _generateAddPreferencesCallback(importTableOptions.speedDatePreferenceValues, rowObject, speedDateIds));
+        } catch (err) {
+          err.message = 'V tabulke "' + importTable.getSheet().getName() + '" sa našla neznáma hodnota pod'
+          + ' záujemu o Speed Date-y v riadku ' + (row + importTable.getHeadersRange().getLastRow()) + '\\n'
+          + err.message;
+          throw err;
+        }
+
+        importTable.setRow(row, rowObject);
+      });
+    }
 
     // Modify import table.
     if ('beforeMergeMutator' in importTableOptions) {
