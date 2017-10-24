@@ -70,7 +70,7 @@ export const loadStudentDocuments = async (googleSheetId) => {
 	// const speedDateDocuments = await loadSpeedDateDocuments(googleSheetId);
 
 	const fields = [
-		'FirstName', 'LastName', /* 'Barcode', */ 'Email', /* 'OrderDate', */
+		'FirstName', 'LastName', 'Barcode', 'Email', /* 'OrderDate', */
 		/* 'TicketType', */ 'CVLink', /* 'SDMotivation', 'CommentScreen', */
 		/* 'Number', */ 'NumberScreen', /* 'Rating', 'CVSumar', 'SpeedDateSumar', */
 		/* 'School', */ 'SchoolScreen', /* 'Grade', */ 'GradeScreen',
@@ -96,6 +96,6 @@ export const loadStudentDocuments = async (googleSheetId) => {
 	return loadDocuments(
 		googleSheetId,
 		"'Studenti'!A8:IT1000",
-		fields, 'Email',
+		fields, 'Barcode',
 	);
 };

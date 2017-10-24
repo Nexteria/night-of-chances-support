@@ -50,14 +50,19 @@ router.get('/:google_sheet_id/:field_type/ws/:ws_id', expressPromise(async (req,
 			return mappedStudentDocuments[studentId];
 		})
 		.filter((studentDocument) => {
-			return studentDocument[currentStudentWorkshopField] !== undefined
-				&& studentDocument[currentStudentWorkshopField] !== '';
+			return (
+					(studentDocument[currentStudentWorkshopField] !== undefined)
+					&& (studentDocument[currentStudentWorkshopField].toString() === '1')
+				) || (
+					(studentDocument[currentStudentWorkshopField2] !== undefined)
+					&& (studentDocument[currentStudentWorkshopField2].toString() === '1')
+				);
 		})
 		.map((studentDocument) => {
 			return {
 				...studentDocument,
-				isConfirmed: studentDocument[currentStudentWorkshopField2] !== undefined
-					&& studentDocument[currentStudentWorkshopField2] !== '',
+				isConfirmed: (studentDocument[currentStudentWorkshopField2] !== undefined)
+					&& (studentDocument[currentStudentWorkshopField2].toString() === '1'),
 			};
 		});
 
