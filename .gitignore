@@ -7,7 +7,6 @@ Thumbs.db
 
 # Config files file.
 .env
-pm2.json
 
 # NPM generated files.
 node_modules/*
