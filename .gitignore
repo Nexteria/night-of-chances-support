@@ -1,9 +1,6 @@
-# OS specific files.
-.DS_Store
-Thumbs.db
-
-# IDEs configuration files.
-.vscode/*
+# Build generated files.
+build/*
+output/*
 
 # Config files file.
 .env
@@ -11,10 +8,6 @@ Thumbs.db
 # NPM generated files.
 node_modules/*
 npm-debug.log*
-
-# Build generated files.
-build/*
-output/*
 
 # Stored cache files.
 .google_api_token
