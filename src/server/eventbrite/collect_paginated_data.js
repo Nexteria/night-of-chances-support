@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import config from '@/src/server/lib/config';
 import promiseLoop from '@/src/common/promise_loop';
 import request from '@/src/server/lib/request';

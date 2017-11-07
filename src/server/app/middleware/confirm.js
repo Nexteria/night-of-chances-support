@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import * as dataTypes from '@/src/common/data_type';
 import * as colorCrm from '@/src/server/google/color_crm';
 import config from '@/src/server/lib/config';

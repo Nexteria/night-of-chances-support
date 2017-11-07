@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import * as dataType from '@/src/common/data_type';
 import eventbriteCollectPaginatedData from '@/src/server/eventbrite/collect_paginated_data';
 import knex from '@/src/server/knex';

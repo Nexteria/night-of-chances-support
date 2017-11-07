@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import AddDoubleColumnMixin from '@/src/server/knex/mixin/add_double_column';
 import CreateIndexMixin from '@/src/server/knex/mixin/create_index';
 

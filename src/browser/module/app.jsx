@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import NavLink from '@/src/browser/module/nav_link.jsx';
 
 // Load npm modules.

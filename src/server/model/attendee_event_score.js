@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import Model from '@/src/server/model';
 
 // Load npm modules.

@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import * as dataType from '@/src/common/data_type';
 import * as googleAuth from '@/src/server/google/auth';
 import * as googleSheet from '@/src/server/google/sheet';

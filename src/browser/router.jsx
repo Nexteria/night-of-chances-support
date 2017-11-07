@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import App from '@/src/browser/module/app.jsx';
 import Home from '@/src/browser/module/home.jsx';
 import About from '@/src/browser/module/about.jsx';

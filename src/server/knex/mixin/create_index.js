@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import RawMixin from '@/src/server/knex/mixin/raw';
 
 // Expose mixin class for create index.

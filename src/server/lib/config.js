@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import * as paths from '@/src/server/lib/paths';
 import npmPackage from '@/package.json';
 

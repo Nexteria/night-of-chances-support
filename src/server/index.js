@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-// Load app modules.
+// Load local modules.
 import app from '@/src/server/app';
 import knex from '@/src/server/knex';
 import config from '@/src/server/lib/config';

@@ -4,7 +4,7 @@
 // TODO: Add CNF or DNF queries.
 // TODO: Add projection to find methods.
 
-// Load app modules.
+// Load local modules.
 import * as dataType from '@/src/common/data_type';
 import {
 	EntityExistsError,

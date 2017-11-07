@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import importMiddleware from '@/src/server/app/middleware/api/import';
 import attributeModelMiddleware from '@/src/server/app/middleware/api/attribute_model';
 import attendeeModel from '@/src/server/model/attendee';

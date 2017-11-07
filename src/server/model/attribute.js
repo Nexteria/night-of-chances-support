@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import * as dataType from '@/src/common/data_type';
 import knex from '@/src/server/knex';
 import Model from '@/src/server/model';

@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import knexConfig from '@/src/server/knex/config';
 import knexMixin from '@/src/server/knex/mixin';
 import config from '@/src/server/lib/config';

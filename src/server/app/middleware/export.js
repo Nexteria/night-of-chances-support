@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import * as colorCrm from '@/src/server/google/color_crm';
 import config from '@/src/server/lib/config';
 import expressBasicAuth from '@/src/server/lib/express_basic_auth';

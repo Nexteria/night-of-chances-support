@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 // import apiMiddleware from '@/src/server/app/middleware/api';
 import confirmMiddleware from '@/src/server/app/middleware/confirm';
 import errorMiddleware from '@/src/server/app/middleware/error';

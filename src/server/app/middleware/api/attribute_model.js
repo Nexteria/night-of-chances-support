@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import expressPromise from '@/src/server/lib/express_promise';
 import {
 	EntityExistsError,

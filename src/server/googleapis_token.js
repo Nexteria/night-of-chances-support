@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-// Load app modules.
+// Load local modules.
 import * as googleAuth from '@/src/server/google/auth';
 import config from '@/src/server/lib/config';
 

@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import routes from '@/src/browser/router.jsx';
 import expressPromise from '@/src/server/lib/express_promise';
 import * as paths from '@/src/server/lib/paths';

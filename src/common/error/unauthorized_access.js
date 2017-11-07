@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import BaseError from '@/src/common/error/base';
 
 // Expose error class.

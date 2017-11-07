@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import AttributeModel from '@/src/server/model/attribute';
 
 // Load npm modules.

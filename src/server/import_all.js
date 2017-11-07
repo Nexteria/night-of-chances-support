@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-// Load app modules.
+// Load local modules.
 import eventbriteImportProjectAttendees from '@/src/server/eventbrite/import_project_attendees';
 import jotformImportProjectPreferences from '@/src/server/google/import_project_preferences';
 import knex from '@/src/server/knex';

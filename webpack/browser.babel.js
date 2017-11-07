@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import config from '@/src/server/lib/config';
 import * as paths from '@/src/server/lib/paths';
 
