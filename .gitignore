@@ -1,16 +1,17 @@
 # Build generated files.
 build/*
-output/*
+dist/*
 
-# Config files file.
+# Config files.
 .env
 
 # NPM generated files.
 node_modules/*
 npm-debug.log*
 
-# Stored cache files.
-.google_api_token
+# Runtime generated files.
+output/*
 
-# Lint generated files.
-.eslintcache
+# Test coverage cache.
+.nyc_output
+coverage

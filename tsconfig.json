@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"*": [
+				"*"
+			],
+			".../*": [
+				"./*"
+			]
+		},
+		"typeRoots": [
+			"node_modules/@types",
+			"src/@types"
+		]
+	},
+	"exclude": [
+		"build",
+		"dist",
+		"node_modules"
+	],
+	"extends": "./node_modules/@player1os/tsconfig/index"
+}
