@@ -5,11 +5,14 @@ export const up = async (knex: Knex) => {
 	await knex.schema.createTable('attendee_attribute', (tab) => {
 		tab.increments('key')
 			.notNullable()
-			.primary()
 		tab.string('name', 256)
-			.unique()
+			.notNullable()
 		tab.string('color', 6)
+			.notNullable()
 			.defaultTo('eeeeee')
+
+		tab.primary(['key'])
+		tab.unique(['name'])
 	})
 }
 
