@@ -1,3 +1,5 @@
+// tslint:disable:max-classes-per-file
+
 declare module 'googleapis' {
 	namespace google {
 		namespace auth {
@@ -11,7 +13,7 @@ declare module 'googleapis' {
 			}
 		}
 		class SheetsApi {
-			spreadsheets: {
+			public spreadsheets: {
 				values: {
 					get(params: {
 						auth: auth.OAuth2,
@@ -19,14 +21,12 @@ declare module 'googleapis' {
 						range: string,
 					}, callback: (err: Error | null, result: {
 						values: string[][],
-					}) => void): void
-				}
+					}) => void): void,
+				},
 			}
 		}
 
 		function sheets(apiVersion: string): SheetsApi
-
-
 	}
 
 	export = google

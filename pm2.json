@@ -1,7 +1,7 @@
 {
 	"apps": [{
 		"name": "night-of-chances-support-server",
-		"script": "server/index.js",
+		"script": "index.js",
 		"cwd": "dist/current",
 		"log_date_format": "YYYY-MM-DD HH:mm:ss",
 		"exec_mode": "cluster",

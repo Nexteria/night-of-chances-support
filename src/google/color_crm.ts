@@ -26,7 +26,9 @@ const loadDocuments = async (googleSheetId: string, googleSheetRange: string, fi
 
 	return sheetValues.slice(1).map((workshopValues) => {
 		return Object.keys(columnOffsets).reduce((document, headerName) => {
-			document[headerName] = workshopValues[columnOffsets[headerName]] || ''
+			document[headerName] = workshopValues[columnOffsets[headerName]] === undefined
+				? ''
+				: workshopValues[columnOffsets[headerName]]
 			return document
 		}, {} as { [name: string]: string })
 	})
@@ -36,7 +38,7 @@ const loadDocuments = async (googleSheetId: string, googleSheetRange: string, fi
 	}, {} as { [id: string]: { [name: string]: string }})
 }
 
-export const loadWorkshopDocuments = (googleSheetId: string) => {
+export const loadWorkshopDocuments = async (googleSheetId: string) => {
 	return loadDocuments(
 		googleSheetId,
 		"'Workshop-y'!A1:G100",
@@ -49,17 +51,17 @@ export const loadWorkshopDocuments = (googleSheetId: string) => {
 	)
 }
 
-export const loadSpeedDateDocuments = (googleSheetId: string) => {
-	return loadDocuments(
-		googleSheetId,
-		"'Speed date-y'!A4:O100",
-		[
-			'Id', 'Name1', 'Name2', 'StartTime', 'EndTime',
-			'Room', 'Type', 'CapacityMin', 'CapacityMax',
-		],
-		'Id',
-	)
-}
+// export const loadSpeedDateDocuments = async (googleSheetId: string) => {
+// 	return loadDocuments(
+// 		googleSheetId,
+// 		"'Speed date-y'!A4:O100",
+// 		[
+// 			'Id', 'Name1', 'Name2', 'StartTime', 'EndTime',
+// 			'Room', 'Type', 'CapacityMin', 'CapacityMax',
+// 		],
+// 		'Id',
+// 	)
+// }
 
 export const loadStudentDocuments = async (googleSheetId: string) => {
 	const workshopDocuments = await loadWorkshopDocuments(googleSheetId)

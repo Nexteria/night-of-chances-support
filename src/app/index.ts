@@ -1,7 +1,7 @@
 // Load local modules.
 import env from '.../src/.env'
-import apiMiddleware from '.../src/app/api'
-import confirmMiddleware from '.../src/app/confirm'
+// import apiMiddleware from '.../src/app/api'
+// import confirmMiddleware from '.../src/app/confirm'
 import exportMiddleware from '.../src/app/export'
 
 // Load scoped modules.
@@ -35,11 +35,11 @@ app.use(jsonBodyParserMiddleware((_err, _req, res, _next) => {
 // Add serving of static content.
 app.use(express.static(path.join(env.APP_ROOT_PATH, 'static')))
 
-// Add api middleware.
-app.use('/api', apiMiddleware)
+// // Add api middleware.
+// app.use('/api', apiMiddleware)
 
-// Add confirm middleware.
-app.use('/confirm', confirmMiddleware)
+// // Add confirm middleware.
+// app.use('/confirm', confirmMiddleware)
 
 // Add export middleware.
 app.use('/export', exportMiddleware)

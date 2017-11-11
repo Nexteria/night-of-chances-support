@@ -15,22 +15,10 @@ declare const _env_: {
 	APP_BASIC_AUTH_NAME: string,
 	APP_BASIC_AUTH_PASSWORD: string,
 
-	APP_DATABASE_HOST: string,
-	APP_DATABASE_PORT: number, // integer
-	APP_DATABASE_NAME: string,
-	APP_DATABASE_USERNAME: string,
-	APP_DATABASE_PASSWORD: string,
-	APP_DATABASE_POOL_MIN: number, // integer
-	APP_DATABASE_POOL_MAX: number, // integer
-
-	APP_EVENTBRITE_PERSONAL_TOKEN: string,
-
 	APP_GOOGLE_API_CLIENT_ID: string,
 	APP_GOOGLE_API_CLIENT_SECRET: string,
 	APP_GOOGLE_API_REDIRECT_URI: string,
 	APP_GOOGLE_API_REDIRECT_SCOPES: any, // json
-
-	APP_CONTACT_EMAIL: string,
 }
 
 export default _env_
