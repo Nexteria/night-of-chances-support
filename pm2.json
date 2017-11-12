@@ -8,6 +8,8 @@
 		"instances" : 3,
 		"error_file": "../../output/err.log",
 		"out_file": "../../output/out.log",
+		"wait_ready": true,
+		"listen_timeout" : 4000,
 		"kill_timeout" : 12000,
 		"combine_logs": false
 	}]

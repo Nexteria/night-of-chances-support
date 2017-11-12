@@ -32,6 +32,11 @@ executePromise(async () => {
 		'Http server initialized',
 		`(IP Address: ${env.APP_HTTP_IP} | Port ${env.APP_HTTP_PORT.toString()})`,
 	)
+
+	// Signal that the process is ready to recieve connections.
+	if (process.send !== undefined) {
+		process.send('ready')
+	}
 })
 
 // Setup the graceful shutdown handler.
