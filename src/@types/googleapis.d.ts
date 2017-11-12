@@ -4,7 +4,7 @@ declare module 'googleapis' {
 	namespace google {
 		namespace auth {
 			class OAuth2 {
-				public credentials: string
+				public credentials: object
 				constructor(clientId: string, clientSecret: string, redirectUri: string)
 
 				generateAuthUrl(params: object): string

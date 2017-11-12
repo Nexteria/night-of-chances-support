@@ -2,11 +2,7 @@
 import env from '.../src/.env'
 
 // Load npm modules.
-import * as fse from 'fs-extra'
 import * as google from 'googleapis'
-
-// Load node modules.
-import * as path from 'path'
 
 // Creates OAuth2 client based on config.
 const createOAuth2Client = () => {
@@ -16,9 +12,6 @@ const createOAuth2Client = () => {
 		'urn:ietf:wg:oauth:2.0:oob',
 	)
 }
-
-// Define token storage file path.
-const tokenStorageFilePath = path.join(env.APP_ROOT_PATH, '.google_api_token')
 
 // Generate a url for retrieving the token code.
 export const generateAuthUrl = (scope: object) => {
@@ -39,13 +32,12 @@ export const retrieveToken = async (code: string) => {
 			}
 		})
 	})
-	return fse.writeJson(tokenStorageFilePath, token)
+	return token
 }
 
 // Create a client that uses a stored google api token.
 export const createClient = async () => {
-	const token = await fse.readJson(tokenStorageFilePath)
 	const auth = createOAuth2Client()
-	auth.credentials = token
+	auth.credentials = env.APP_GOOGLE_API_TOKEN
 	return auth
 }

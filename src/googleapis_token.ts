@@ -29,8 +29,9 @@ executePromise(async () => {
 	readlineInterface.close()
 
 	// Attempt to retrieve the google api token based on the entered code.
-	await googleAuth.retrieveToken(code)
+	const token = await googleAuth.retrieveToken(code)
 
 	// Output success message.
-	console.log('Google Api token successfully stored.') // tslint:disable-line:no-console
+	console.log('Google Api token successfully stored:') // tslint:disable-line:no-console
+	console.log(token) // tslint:disable-line:no-console
 })
