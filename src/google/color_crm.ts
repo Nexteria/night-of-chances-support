@@ -2,6 +2,13 @@
 import * as googleAuth from '.../src/google/auth'
 import * as googleSheet from '.../src/google/sheet'
 
+// Load npm modules.
+import * as lodash from 'lodash'
+
+export const isTrue = (value?: string) => {
+	return value === '1'
+}
+
 const getColumnOffsets = (sheetValues: string[][], fields: string[]) => {
 	return sheetValues[0].reduce((offsets, sheetHeader, sheetHeaderIndex) => {
 		if (fields.indexOf(sheetHeader) !== -1) {
@@ -28,7 +35,7 @@ const loadDocuments = async (googleSheetId: string, googleSheetRange: string, fi
 		return Object.keys(columnOffsets).reduce((document, headerName) => {
 			document[headerName] = workshopValues[columnOffsets[headerName]] === undefined
 				? ''
-				: workshopValues[columnOffsets[headerName]]
+				: workshopValues[columnOffsets[headerName]].trim()
 			return document
 		}, {} as { [name: string]: string })
 	})
@@ -38,62 +45,84 @@ const loadDocuments = async (googleSheetId: string, googleSheetRange: string, fi
 	}, {} as { [id: string]: { [name: string]: string }})
 }
 
-export const loadWorkshopDocuments = async (googleSheetId: string) => {
-	return loadDocuments(
+export interface IEventDocument {
+	Id: string,
+	Export: string,
+	Type: string,
+	Name1: string,
+	Name2: string,
+	StartTime: string,
+	EndTime: string,
+	Buddy: string,
+	Room: string,
+
+	[name: string]: string,
+}
+
+export const loadEventDocuments = async (googleSheetId: string) => {
+	const result = await loadDocuments(
 		googleSheetId,
-		"'Workshop-y'!A1:G100",
+		"'Eventy'!A1:I100",
 		[
-			'Id', 'Name1', 'Name2', /* 'Prerequisites', */
-			'StartTime', 'EndTime', 'Buddy', 'Room',
-			'Type', /* 'Prerequisites', 'CapacityMin', 'CapacityMax', */
+			'Id',
+			'Export',
+			'Type',
+			'Name1',
+			'Name2',
+			'StartTime',
+			'EndTime',
+			'Buddy',
+			'Room',
 		],
 		'Id',
 	)
+
+	return result as { [id: string]: IEventDocument }
 }
 
-// export const loadSpeedDateDocuments = async (googleSheetId: string) => {
-// 	return loadDocuments(
-// 		googleSheetId,
-// 		"'Speed date-y'!A4:O100",
-// 		[
-// 			'Id', 'Name1', 'Name2', 'StartTime', 'EndTime',
-// 			'Room', 'Type', 'CapacityMin', 'CapacityMax',
-// 		],
-// 		'Id',
-// 	)
-// }
+export interface IStudentDocument {
+	Barcode: string,
+	FirstName: string,
+	LastName: string,
+	Email: string,
+	CVLink: string,
+	NumberScreen: string,
+	SchoolScreen: string,
+	GradeScreen: string,
+
+	[name: string]: string,
+}
 
 export const loadStudentDocuments = async (googleSheetId: string) => {
-	const workshopDocuments = await loadWorkshopDocuments(googleSheetId)
-	// const speedDateDocuments = await loadSpeedDateDocuments(googleSheetId)
+	const eventDocuments = await loadEventDocuments(googleSheetId)
 
 	const fields = [
-		'FirstName', 'LastName', 'Barcode', 'Email', /* 'OrderDate', */
-		/* 'TicketType', */ 'CVLink', /* 'SDMotivation', 'CommentScreen', */
-		/* 'Number', */ 'NumberScreen', /* 'Rating', 'CVSumar', 'SpeedDateSumar', */
-		/* 'School', */ 'SchoolScreen', /* 'Grade', */ 'GradeScreen',
+		'FirstName',
+		'LastName',
+		'Barcode',
+		'Email',
+		'CVLink',
+		'NumberScreen',
+		'SchoolScreen',
+		'GradeScreen',
 	]
-	Object.keys(workshopDocuments).forEach((workshopId) => {
-		fields.push(
-			`${workshopId}Štud`,
-			`${workshopId}Skóre`,
-			`${workshopId}Auto`,
-			`${workshopId}Final`,
-			`${workshopId}Real`,
-		)
-	})
-	// Object.keys(speedDateDocuments).forEach((speedDateId) => {
-	// 	fields.push(
-	// 		`${speedDateId}Štud`,
-	// 		`${speedDateId}Skóre`,
-	// 		`${speedDateId}Final`,
-	// 		`${speedDateId}Real`,
-	// 	)
-	// })
 
-	return loadDocuments(
+	lodash.forEach(eventDocuments, (evenDocument, eventId) => {
+		if (isTrue(evenDocument.Export)) {
+			fields.push(
+				`${eventId}Auto`,
+				`${eventId}Final`,
+				`${eventId}Real`,
+			)
+		}
+	})
+
+	const result = await loadDocuments(
 		googleSheetId,
-		"'Studenti'!A8:IT1000",
-		fields, 'Barcode',
+		"'Studenti'!A8:XX1000",
+		fields,
+		'Barcode',
 	)
+
+	return result as { [barcode: string]: IStudentDocument }
 }

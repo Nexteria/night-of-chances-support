@@ -12,6 +12,10 @@ npm-debug.log*
 # Runtime generated files.
 output/*
 
+# Asset files.
+.google_api_token
+static/logo/*
+
 # Test coverage cache.
 .nyc_output
 coverage

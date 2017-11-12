@@ -2,6 +2,10 @@
 	display: none;
 }
 
+article + article {
+	page-break-before: always;
+}
+
 a {
 	color: blue !important;
 }

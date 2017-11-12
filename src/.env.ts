@@ -17,8 +17,7 @@ declare const _env_: {
 
 	APP_GOOGLE_API_CLIENT_ID: string,
 	APP_GOOGLE_API_CLIENT_SECRET: string,
-	APP_GOOGLE_API_REDIRECT_URI: string,
-	APP_GOOGLE_API_REDIRECT_SCOPES: any, // json
+	APP_GOOGLE_API_SCOPES: any, // json
 }
 
 export default _env_

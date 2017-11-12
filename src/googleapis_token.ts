@@ -13,7 +13,7 @@ import * as readline from 'readline'
 executePromise(async () => {
 	// Generate and output the auth url for the specified scopes.
 	console.log( // tslint:disable-line:no-console
-		`Authorize this app by visiting this url:\n${googleAuth.generateAuthUrl(env.APP_GOOGLE_API_REDIRECT_SCOPES)}`,
+		`Authorize this app by visiting this url:\n${googleAuth.generateAuthUrl(env.APP_GOOGLE_API_SCOPES)}`,
 	)
 
 	// Prompt user to enter the authorization code.
@@ -21,9 +21,11 @@ executePromise(async () => {
 		input: process.stdin,
 		output: process.stdout,
 	})
-	const code = await Promise.promisify(readlineInterface.question)('Enter the code from that page here:\n') as string
-
-	// Close the cli read line interface.
+	const code = await (new Promise((resolve: (result: string) => void) => {
+		readlineInterface.question('Enter the code from that page here:\n', (result) => {
+			resolve(result)
+		})
+	}))
 	readlineInterface.close()
 
 	// Attempt to retrieve the google api token based on the entered code.

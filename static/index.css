@@ -8,6 +8,11 @@ body#export {
 	margin: 0 0.4em;
 	list-style: none;
 }
+#export h1 {
+	font-size: 16pt;
+	font-weight: bold;
+	padding-top: 0.4em;
+}
 #export div {
 	padding-bottom: 1em;
 }

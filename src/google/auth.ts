@@ -13,7 +13,7 @@ const createOAuth2Client = () => {
 	return new google.auth.OAuth2(
 		env.APP_GOOGLE_API_CLIENT_ID,
 		env.APP_GOOGLE_API_CLIENT_SECRET,
-		env.APP_GOOGLE_API_REDIRECT_URI,
+		'urn:ietf:wg:oauth:2.0:oob',
 	)
 }
 
@@ -30,7 +30,15 @@ export const generateAuthUrl = (scope: object) => {
 
 // Get a token from the google api and store it.
 export const retrieveToken = async (code: string) => {
-	const token = await Promise.promisify(createOAuth2Client().getToken)(code) as string
+	const token = await new Promise((resolve: (result: string) => void, reject) => {
+		createOAuth2Client().getToken(code, (err, result) => {
+			if (err !== null) {
+				reject(err)
+			} else {
+				resolve(result)
+			}
+		})
+	})
 	return fse.writeJson(tokenStorageFilePath, token)
 }
 
