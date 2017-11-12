@@ -37,8 +37,6 @@
   "dependencies": {
     "@player1os/execute-promise": "^1.0.1",
     "@player1os/express-utility": "^1.3.5",
-    "@player1os/joi-utility": "^1.1.3",
-    "@player1os/knex-utility": "^1.4.0",
     "@player1os/node-js-application-runtime": "^1.0.1",
     "basic-auth": "^2.0.0",
     "ejs": "^2.5.7",
