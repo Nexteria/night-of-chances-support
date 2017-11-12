@@ -1,15 +1,13 @@
 {
-	"apps": [
-		{
-			"name": "app_server",
-			"script": "build/server",
-			"cwd": ".",
-			"log_date_format": "YYYY-MM-DD HH:mm:ss",
-			"exec_mode": "cluster",
-			"instances" : 0,
-			"error_file": "output/err.log",
-			"out_file": "output/out.log",
-			"combine_logs": true
-		}
-	]
+	"apps": [{
+		"name": "night-of-chances-support-server",
+		"script": "index.js",
+		"cwd": "dist/current",
+		"log_date_format": "YYYY-MM-DD HH:mm:ss",
+		"exec_mode": "cluster",
+		"instances" : 3,
+		"error_file": "../../output/err.log",
+		"out_file": "../../output/out.log",
+		"combine_logs": false
+	}]
 }

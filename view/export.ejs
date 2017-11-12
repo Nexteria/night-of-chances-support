@@ -1,0 +1,100 @@
+<%- include('_header.ejs', {
+	title: title,
+	bodyId: 'export',
+}) %>
+	<section>
+		<% eventDocuments.forEach(function (eventDocument) { %>
+			<article>
+				<img src="<%= logoUri %>" alt="Night of Chances logo" height="120" width="150" style="float: right; margin-top: 10px; margin-right: 20px" />
+				<h1 style="margin-top: 0"><%= documentTitle %></h1>
+				<ul>
+					<li><strong><%= eventDocument.Type %></strong>: <%= eventDocument.Name2 %></li>
+					<li><strong>Firma</strong>: <%= eventDocument.Name1 %></li>
+					<li><strong>Čas</strong>: <%= eventDocument.StartTime + ' - ' + eventDocument.EndTime %></li>
+					<li><strong>Miestnosť</strong>: <%= eventDocument.Room %></li>
+					<% if (eventDocument.Buddy !== '') { %>
+					<li><strong>Buddy</strong>: <%= eventDocument.Buddy %></li>
+					<% } %>
+				</ul>
+				<table style="width: 100%; clear: both">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Meno</th>
+							<th>Priezvisko</th>
+							<th>Email</th>
+							<th>Telefón</th>
+							<th>Škola</th>
+							<th>Ročník</th>
+							<% switch (exportType) {
+							case 'before-firm': %>
+							<th>CV</th>
+							<th>Potvrdený</th>
+							<% break
+							case 'before-buddy': %>
+							<th>Potvrdený</th>
+							<th>Prítomný</th>
+							<% break
+							case 'after-firm': %>
+							<th>CV</th>
+							<th>Potvrdený</th>
+							<th>Prítomný</th>
+							<% break
+							} %>
+						</tr>
+					</thead>
+					<tbody>
+						<% studentDocuments[eventDocument.Id].forEach(function (studentDocument, index) { %>
+						<% var isConfirmed = studentDocument[eventDocument.Id + 'Final'] === '1' %>
+						<% var isPresent = studentDocument[eventDocument.Id + 'Real'] === '1' %>
+						<tr>
+							<td><%= index + 1 %></td>
+							<td><%= studentDocument.FirstName %></td>
+							<td><%= studentDocument.LastName %></td>
+							<td><%= studentDocument.Email %></td>
+							<td><%= studentDocument.NumberScreen %></td>
+							<td><%= studentDocument.SchoolScreen %></td>
+							<td><%= studentDocument.GradeScreen %></td>
+							<% switch (exportType) {
+							case 'before-firm': %>
+							<td>
+								<% if (studentDocument.CVLink !== '') { %>
+								<a href="<%= studentDocument.CVLink %>" target="_blank">odkaz</a>
+								<% } %>
+							</td>
+							<td><%= isConfirmed ? 'áno' : 'nie' %></td>
+							<% break
+							case 'before-buddy': %>
+							<td><%= isConfirmed ? 'áno' : 'nie' %></td>
+							<td><%= isPresent ? 'áno' : 'nie' %></td>
+							<% break
+							case 'after-firm': %>
+							<td>
+								<% if (studentDocument.CVLink !== '') { %>
+								<a href="<%= studentDocument.CVLink %>" target="_blank">odkaz</a>
+								<% } %>
+							</td>
+							<td><%= isConfirmed ? 'áno' : 'nie' %></td>
+							<td><%= isPresent ? 'áno' : 'nie' %></td>
+							<% break
+							} %>
+						</tr>
+						<% }) %>
+						<%
+							if (exportType === 'before-buddy') {
+								for (var i = 0; i < 10; ++i) {
+						%>
+						<tr>
+							<td><%= i + studentDocuments[eventDocument.Id].length + 1 %></td>
+							<%- '<td></td>'.repeat(8) %>
+						</tr>
+						<%
+								}
+							}
+						%>
+					</tbody>
+				</table>
+			</article>
+		<% }) %>
+	</section>
+<%- include('_footer.ejs') %>

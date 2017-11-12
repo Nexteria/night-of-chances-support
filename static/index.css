@@ -1,0 +1,44 @@
+body#export {
+	padding: 1.5em;
+}
+#export h1,
+#export ul {
+	padding: 0;
+	padding-bottom: 0.5em;
+	margin: 0 0.4em;
+	list-style: none;
+}
+#export h1 {
+	font-size: 16pt;
+	font-weight: bold;
+	padding-top: 0.4em;
+}
+#export div {
+	padding-bottom: 1em;
+}
+#export th {
+	background: #333;
+	color: white;
+}
+#export td, th {
+	padding: 0.4em;
+	border: thin solid silver;
+}
+
+body#confirm_list {
+	padding: 1.5em;
+}
+#confirm_list div {
+	padding: 0;
+	margin: 0 0.4em;
+	float: left;
+	list-style: none;
+}
+#confirm_list th {
+	background: #333;
+	color: white;
+}
+#confirm_list td, th {
+	padding: 0.4em;
+	border: thin solid silver;
+}
