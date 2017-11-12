@@ -1,5 +1,7 @@
 # Night of Chances Support
 
+Retrieve the missing client id and client secret from [https://console.developers.google.com/projectselector/apis/library?pli=1&supportedpurview=project](https://console.developers.google.com/projectselector/apis/library?pli=1&supportedpurview=project).
+
 ## Data structures
 
 ### Person

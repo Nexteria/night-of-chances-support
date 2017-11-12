@@ -19,7 +19,7 @@ import * as httpStatus from 'http-status'
 // Load node modules.
 import * as path from 'path'
 
-// Initialize app.
+// Initialize the express app.
 const app = createApplication()
 
 // Start view engine that correctly parses and loads templates.
