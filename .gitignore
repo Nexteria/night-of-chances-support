@@ -13,7 +13,6 @@ npm-debug.log*
 output/*
 
 # Asset files.
-.google_api_token
 static/logo/*
 
 # Test coverage cache.
