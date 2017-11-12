@@ -1,6 +1,6 @@
 {
   "name": "night-of-chances-support",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A project for processing registration data and generating documents for the night of chances event",
   "engines": {
     "node": "~8.7.0",
