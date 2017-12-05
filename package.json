@@ -47,7 +47,7 @@
     "lodash": "^4.17.4"
   },
   "devDependencies": {
-    "@player1os/node-js-application-support": "^1.2.4",
+    "@player1os/node-js-application-support": "^1.2.5",
     "@player1os/nyc-config": "^1.0.0",
     "@player1os/tsconfig": "^1.0.10",
     "@player1os/tslint-config": "^1.3.7",
