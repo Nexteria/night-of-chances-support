@@ -4,7 +4,7 @@
   "description": "A project for processing registration data and generating documents for the night of chances event",
   "engines": {
     "node": "~8.7.0",
-    "npm": "~5.5.1"
+    "npm": "~5.6.0"
   },
   "scripts": {
     "preversion": "node-js-application-preversion",
